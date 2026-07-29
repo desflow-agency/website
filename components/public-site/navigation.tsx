@@ -92,7 +92,7 @@ export function Navigation() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -15, scale: 0.98 }}
               transition={{ duration: 0.22 }}
-              className="mx-3 mb-3 overflow-hidden rounded-3xl border border-white/20 bg-white/80 backdrop-blur-3xl shadow-2xl shadow-black/20 md:hidden"
+              className="mx-3 mb-3 overflow-hidden rounded-3xl border border-white/20 bg-white/95 backdrop-blur-3xl shadow-2xl shadow-black/20 md:hidden"
             >
               <div className="flex flex-col gap-2 p-4">
                 {links.map(([label, id]) => (
