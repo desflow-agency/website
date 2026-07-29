@@ -6,7 +6,7 @@ import { useState } from "react";
 export function ContactSection() {
   return (
     <section
-      id="kontakt"
+      id="contact"
       className="shell py-16"
     >
       <div className="rounded-4xl bg-[#5b5cf0] p-8 text-white md:p-14">

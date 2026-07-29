@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
-const navigation = [["Oferta", "#oferta"], ["Portfolio", "#portfolio"], ["Opinie", "#opinie"], ["Kontakt", "#kontakt"]];
+const navigation = [["Oferta", "#offer"], ["Portfolio", "#portfolio"], ["Opinie", "#reviews"], ["Kontakt", "#contact"]];
 
 export function Footer() {
   return (

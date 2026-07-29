@@ -18,7 +18,7 @@ import {
   
   export function ServicesSection() {
     return (
-      <section id="oferta" className="bg-white py-28">
+      <section id="offer" className="bg-white py-28">
         <div className="shell">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>

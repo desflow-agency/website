@@ -19,7 +19,7 @@ const testimonials = [
   export function TestimonialsSection() {
     return (
       <section
-        id="opinie"
+        id="reviews"
         className="shell py-28"
       >
         <p className="eyebrow">
