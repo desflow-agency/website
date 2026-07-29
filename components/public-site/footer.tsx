@@ -18,7 +18,7 @@ export function Footer() {
           </div>
           <div>
             <p className="footer-label">Kontakt</p>
-            <div className="mt-5 grid gap-3 text-sm text-[#d8d8e3]"><a className="footer-link" href="mailto:hello@agencyname.pl">hello@desflow.pl</a></div>
+            <div className="mt-5 grid gap-3 text-sm text-[#d8d8e3]"><a className="footer-link" href="mailto:hello@desflow.pl">hello@desflow.pl</a></div>
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 pt-7 text-xs text-[#898b9d]"><span>© {new Date().getFullYear()} desflow. Wszelkie prawa zastrzeżone.</span></div>

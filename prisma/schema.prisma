@@ -60,8 +60,8 @@ model Message {
 
 model SiteSettings {
   id           String @id @default("default")
-  name         String @default("AgencyName")
-  email        String @default("hello@agencyname.studio")
+  name         String @default("desflow")
+  email        String @default("hello@desflow.pl")
   phone        String @default("+48 123 456 789")
   address      String @default("Warszawa, Polska")
   primaryColor String @default("#5B5CF0")

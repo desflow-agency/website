@@ -15,7 +15,7 @@ export const money = (value: number) => {
 export const services = [
   [
     "Projektowanie grafik",
-    "Systemy wizualne, social media i materiały, których nie da się przewinąć.",
+    "Systemy wizualne, branding i materiały, których nie da się przewinąć.",
     50,
     "Sparkles",
   ],
@@ -26,21 +26,9 @@ export const services = [
     "Play",
   ],
   [
-    "Social Media",
+    "Social Media Marketing",
     "Strategia, content i community w jednym spójnym procesie.",
     150,
     "MessageCircle",
-  ],
-  [
-    "Branding",
-    "Tożsamość marki, która mówi zanim padnie pierwsze słowo.",
-    250,
-    "Palette",
-  ],
-  [
-    "Reklamy Meta",
-    "Kampanie skupione na konwersji, a nie pustych zasięgach.",
-    250,
-    "Target",
   ],
 ] as const;

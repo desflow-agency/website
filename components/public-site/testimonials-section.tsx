@@ -1,18 +1,18 @@
 const testimonials = [
     [
-      "Julia Nowak",
-      "CEO, Noma",
-      "Zespół połączył świeże spojrzenie z bardzo konkretnym podejściem do biznesu.",
+      "Jakub B.",
+      "CEO, mcgramy.pl",
+      "Zespół wykonał dla mnie profesjonalnie cały branding mojej marki oraz zarządza moimi profilami social media.",
     ],
     [
-      "Michał Krawiec",
-      "CMO, Vetra",
-      "Najsprawniejszy proces kreatywny, z jakim pracowaliśmy.",
+      "Michał Sz.",
+      "CEO, Taniej.",
+      "Cała szata graficzna została wykonana dla mnie ekspresowo oraz dokładnie tak jak chciałem.",
     ],
     [
-      "Anna Zielińska",
-      "Founder, Mave",
-      "Od strategii po launch — wszystko miało sens i charakter.",
+      "Daniel Pawlak (DeeJayPallaside)",
+      "YouTuber",
+      "Zespół zarządzał moją społecznością Discord przez dłuższy czas, sprawował się przy tym perfekcyjnie.",
     ],
   ] as const;
   

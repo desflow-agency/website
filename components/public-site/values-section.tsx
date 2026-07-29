@@ -25,7 +25,7 @@ export function ValuesSection() {
   return (
     <section className="shell py-28">
       <p className="eyebrow">
-        Dlaczego AgencyName
+        Dlaczego desflow
       </p>
 
       <h2 className="mt-2 max-w-xl text-4xl font-bold tracking-[-.045em]">

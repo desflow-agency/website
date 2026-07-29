@@ -14,34 +14,52 @@ import { TestimonialsSection } from "@/components/public-site/testimonials-secti
 import { ValuesSection } from "@/components/public-site/values-section";
 
 export function PublicSite() {
-  const [lightboxImage, setLightboxImage] = useState<string>();
+  const [lightboxMedia, setLightboxMedia] = useState<string>();
+
+  const isVideo = (url: string) =>
+    /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url);
 
   return (
     <>
       <Navigation />
+
       <main id="home">
         <HeroSection />
         <ValuesSection />
         <ServicesSection />
-        <PortfolioSection onImageClick={setLightboxImage} />
+        <PortfolioSection onImageClick={setLightboxMedia} />
         <StatsSection />
         <TestimonialsSection />
         <ProcessSection />
         <FaqSection />
         <ContactSection />
       </main>
+
       <Footer />
-      {lightboxImage && (
+
+      {lightboxMedia && (
         <button
           className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-6"
-          aria-label="Zamknij powiększony projekt"
-          onClick={() => setLightboxImage(undefined)}
+          aria-label="Zamknij podgląd"
+          onClick={() => setLightboxMedia(undefined)}
         >
-          <img
-            src={lightboxImage}
-            className="max-h-full max-w-full rounded-xl"
-            alt="Powiększony projekt"
-          />
+          {isVideo(lightboxMedia) ? (
+            <video
+              src={lightboxMedia}
+              controls
+              autoPlay
+              playsInline
+              className="max-h-full max-w-full rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={lightboxMedia}
+              alt="Powiększony projekt"
+              className="max-h-full max-w-full rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
         </button>
       )}
     </>

@@ -1,7 +1,7 @@
 import { ArrowUpRight, Plus } from "lucide-react";
 
 const questions = [
-  ["Ile trwa realizacja projektu?", "Zależnie od zakresu: identyfikacja zwykle 3–5 tygodni, a strona 4–8 tygodni. Przed startem przedstawiamy konkretny harmonogram."],
+  ["Ile trwa realizacja projektu?", "Zależnie od projektu, oprawę graficzną wykonujemy zwykle do 3 dni roboczych, montaż oraz zarządzanie social mediami jest wyliczane indywidualnie."],
   ["Czy można zacząć od jednej usługi?", "Tak. Możemy wejść w pojedynczy projekt lub zostać Twoim stałym zespołem kreatywnym."],
   ["Jak wygląda wycena?", "Po krótkiej rozmowie wysyłamy jasną propozycję zakresu, terminów i budżetu."],
 ];
