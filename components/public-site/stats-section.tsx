@@ -16,7 +16,7 @@ export function StatsSection() {
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#aaa9ff]">W liczbach</p>
             <h2 className="mt-3 max-w-xl text-3xl font-bold tracking-tighter text-white md:text-4xl">Kreatywność, która zostawia ślad.</h2>
           </div>
-          <a className="stats-link" href="#kontakt">Zacznij projekt <ArrowUpRight size={17} /></a>
+          <a className="stats-link" href="#contact">Zacznij projekt <ArrowUpRight size={17} /></a>
         </div>
         <div className="relative z-10 mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map(({ value, label, icon: Icon }) => (

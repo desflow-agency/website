@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <a href="#home" className="text-2xl font-black tracking-tight">desflow</a>
             <p className="mt-5 max-w-xs leading-7 text-[#b8b9c7]">Studio strategiczno-kreatywne dla marek, które chcą być zauważone.</p>
-            <a className="footer-cta" href="#kontakt">Porozmawiajmy <ArrowUpRight size={17} /></a>
+            <a className="footer-cta" href="#contact">Porozmawiajmy <ArrowUpRight size={17} /></a>
           </div>
           <div>
             <p className="footer-label">Nawigacja</p>

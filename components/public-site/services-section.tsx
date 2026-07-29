@@ -74,7 +74,7 @@ import {
                     </div>
   
                     <a
-                      href="#kontakt"
+                      href="#contact"
                       aria-label={`Zamów ${title}`}
                       className="btn btn-light p-3"
                     >

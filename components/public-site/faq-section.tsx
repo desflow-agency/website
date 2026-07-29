@@ -14,7 +14,7 @@ export function FaqSection() {
           <p className="eyebrow">FAQ</p>
           <h2 className="mt-3 text-4xl font-bold tracking-[-.055em] md:text-5xl">Kilka dobrych pytań.</h2>
           <p className="mt-5 max-w-sm leading-7 text-[#686b7d]">Wolimy, gdy wszystko jest jasne jeszcze przed pierwszym spotkaniem.</p>
-          <a className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#5b5cf0]" href="#kontakt">Zadaj własne pytanie <ArrowUpRight size={16} /></a>
+          <a className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#5b5cf0]" href="#contact">Zadaj własne pytanie <ArrowUpRight size={16} /></a>
         </div>
         <div className="grid gap-3">
           {questions.map(([question, answer], index) => (
