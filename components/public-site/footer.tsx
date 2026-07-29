@@ -8,7 +8,7 @@ export function Footer() {
       <div className="shell py-12 md:py-16">
         <div className="grid gap-10 border-b border-white/10 pb-10 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
-            <a href="#home" className="text-2xl font-black tracking-tight">desflow</a>
+            <a href="/" className="text-2xl font-black tracking-tight">desflow</a>
             <p className="mt-5 max-w-xs leading-7 text-[#b8b9c7]">Studio strategiczno-kreatywne dla marek, które chcą być zauważone.</p>
             <a className="footer-cta" href="#contact">Porozmawiajmy <ArrowUpRight size={17} /></a>
           </div>

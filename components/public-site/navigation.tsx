@@ -45,7 +45,7 @@ export function Navigation() {
         className="max-w-7xl rounded-3xl border border-white/15 bg-white/20 backdrop-blur-2xl shadow-2xl shadow-black/10"
       >
         <div className="flex h-full items-center justify-between px-6">
-          <a href="#home" className="flex items-center">
+          <a href="/" className="flex items-center">
             <img
               src="/dfblack.png"
               alt="Desflow"
