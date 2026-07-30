@@ -24,7 +24,6 @@ const employeesPath = path.join(
 
 
 
-
 function getMessages(){
 
 
@@ -44,18 +43,18 @@ function getMessages(){
       "[]"
     );
 
-
   }
 
 
 
-
-  return JSON.parse(
+  const file =
     fs.readFileSync(
       filePath,
       "utf-8"
-    )
-  );
+    );
+
+
+  return JSON.parse(file);
 
 
 }
@@ -89,42 +88,46 @@ function saveMessages(
 
 
 function getEmployee(
-    id:string
+  id:string
+){
+
+
+  if(
+    !fs.existsSync(employeesPath)
   ){
-  
-    if(
-      !fs.existsSync(employeesPath)
-    ){
-  
-      return null;
-  
-    }
-  
-  
-    const employees =
-      JSON.parse(
-        fs.readFileSync(
-          employeesPath,
-          "utf-8"
-        )
-      );
-  
-  
-    return employees.find(
-      (employee:any)=>
-        employee.id === id
-    );
-  
+
+    return null;
+
   }
 
 
 
+  const employees =
+    JSON.parse(
+      fs.readFileSync(
+        employeesPath,
+        "utf-8"
+      )
+    );
+
+
+
+  return employees.find(
+    (employee:any)=>
+      employee.id === id
+  );
+
+
+}
 
 
 
 
 
-// UPDATE ZGŁOSZENIA
+
+
+
+// PATCH - aktualizacja zgłoszenia
 
 export async function PATCH(
   req:Request,
@@ -151,7 +154,6 @@ await req.json();
 
 
 
-
 const messages =
 getMessages();
 
@@ -163,7 +165,6 @@ messages.findIndex(
 (message:any)=>
   message.id === id
 );
-
 
 
 
@@ -187,11 +188,8 @@ return NextResponse.json(
 
 
 
-
-
 const old =
 messages[index];
-
 
 
 const history =
@@ -202,19 +200,10 @@ old.history || [];
 
 
 
-
-
-
-/*
- STATUS
-*/
-
-
 if(
 body.status &&
 body.status !== old.status
 ){
-
 
 
 history.push({
@@ -222,18 +211,13 @@ history.push({
 id:
 randomUUID(),
 
-
 action:
 `Zmieniono status z ${old.status} na ${body.status}`,
-
 
 date:
 new Date().toISOString()
 
 });
-
-
-
 
 
 
@@ -266,13 +250,6 @@ ${body.status}
 
 
 
-
-
-/*
- PRZYDZIELENIE
-*/
-
-
 if(
 body.assignedTo !== undefined &&
 body.assignedTo !== old.assignedTo
@@ -291,7 +268,6 @@ getEmployee(
 
 
 
-
 const employeeName =
 employee?.globalName ||
 employee?.username ||
@@ -307,20 +283,16 @@ history.push({
 id:
 randomUUID(),
 
-
 action:
 `Przydzielono zgłoszenie do ${employeeName}`,
 
-
 employeeId:
 body.assignedTo,
-
 
 date:
 new Date().toISOString()
 
 });
-
 
 
 
@@ -354,16 +326,13 @@ ${employee?.discordId || "brak"}
 }else{
 
 
-
 history.push({
 
 id:
 randomUUID(),
 
-
 action:
 "Usunięto przypisaną osobę",
-
 
 date:
 new Date().toISOString()
@@ -371,36 +340,12 @@ new Date().toISOString()
 });
 
 
-
-
-
-
-
-await sendDiscordLog(
-
-"👤 Usunięto przypisaną osobę",
-
-`
-👤 Klient:
-${old.name}
-
-Zgłoszenie zostało odpięte od pracownika.
-`
-
-);
-
-
-
-}
-
-
-
 }
 
 
 
 
-
+}
 
 
 
@@ -423,20 +368,14 @@ history
 
 
 
-
-
 messages[index] =
 updated;
-
-
 
 
 
 saveMessages(
 messages
 );
-
-
 
 
 
@@ -449,27 +388,22 @@ updated
 
 
 
-
-
-
 }catch(error){
 
 
-
 console.error(
-"UPDATE MESSAGE ERROR:",
+"PATCH MESSAGE ERROR:",
 error
 );
 
 
 
-
 return NextResponse.json(
 {
- error:"Błąd serwera"
+error:"Błąd serwera"
 },
 {
- status:500
+status:500
 }
 );
 
@@ -487,7 +421,7 @@ return NextResponse.json(
 
 
 
-// USUWANIE ZGŁOSZENIA
+// DELETE - usuwanie zgłoszenia
 
 export async function DELETE(
   req:Request,
@@ -509,8 +443,10 @@ await context.params;
 
 
 
+
 const messages =
 getMessages();
+
 
 
 
@@ -520,6 +456,27 @@ messages.find(
 (message:any)=>
   message.id === id
 );
+
+
+
+
+
+if(!message){
+
+
+return NextResponse.json(
+{
+error:"Nie znaleziono zgłoszenia"
+},
+{
+status:404
+}
+);
+
+
+}
+
+
 
 
 
@@ -543,41 +500,57 @@ filtered
 
 
 
+
+try{
+
+
 await sendDiscordLog(
 
 "🗑️ Usunięto zgłoszenie",
 
 `
 👤 Klient:
-${message?.name || "Nieznany"}
+${message.name}
 
 📧 Email:
-${message?.email || "Brak"}
+${message.email}
 
-ID:
+🆔 ID:
 ${id}
 `
 
 );
 
 
+}catch(error){
 
 
-
-
-
-return NextResponse.json(
-{
- success:true
-}
+console.error(
+"DISCORD LOG ERROR:",
+error
 );
+
+
+}
+
+
+
+
+
+
+
+return NextResponse.json({
+
+success:true
+
+});
+
 
 
 
 
 
 }catch(error){
-
 
 
 console.error(
@@ -590,10 +563,10 @@ error
 
 return NextResponse.json(
 {
- error:"Nie udało się usunąć zgłoszenia"
+error:"Nie udało się usunąć zgłoszenia"
 },
 {
- status:500
+status:500
 }
 );
 
