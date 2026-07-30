@@ -13,6 +13,19 @@ import { DashboardView } from "../dashboard/dashboard-view";
 import { MessagesView } from "./messages/messages-view";
 import { EmployeesView } from "./employees/employee-view";
 
+
+type AdminEmployee = {
+
+    id:string;
+
+    role:string;
+
+    permissions:string[];
+
+};
+
+
+
 type AdminWorkspaceUser = {
 
     name?: string | null;
@@ -21,11 +34,7 @@ type AdminWorkspaceUser = {
 
     role?: string;
 
-};
-
-type Props = {
-
-    userName?: string;
+    employee?: AdminEmployee | null;
 
 };
 
@@ -47,6 +56,7 @@ export function AdminWorkspace({
 }) {
 
 
+
     const [
         tab,
         setTab
@@ -58,19 +68,28 @@ export function AdminWorkspace({
 
 
 
+
     return (
 
-        <div className="
-      flex
-      min-h-screen
-      bg-[#f7f7fb]
-    ">
+
+        <div
+        className="
+        flex
+        min-h-screen
+        bg-[#f7f7fb]
+        "
+        >
+
 
 
 
             <Sidebar
 
                 user={user}
+
+                employee={
+                    user.employee
+                }
 
                 activeTab={tab}
 
@@ -82,10 +101,16 @@ export function AdminWorkspace({
 
 
 
-            <main className="
-        flex-1
-        p-6
-      ">
+
+
+
+            <main
+            className="
+            flex-1
+            p-6
+            "
+            >
+
 
 
 
@@ -115,8 +140,6 @@ export function AdminWorkspace({
 
 
 
-
-
                 {
                     tab === "employees" && (
 
@@ -128,11 +151,17 @@ export function AdminWorkspace({
 
 
 
+
+
+
             </main>
 
 
 
+
+
         </div>
+
 
     );
 

@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Message {
+  id               String           @id @default(uuid())
+  name             String
+  email            String
+  phone            String?
+  company          String?
+  body             String
+  status           String           @default("NEW")
+  assignedTo       String?
+  suspicious       Boolean          @default(false)
+  suspiciousReason String?
+  createdAt        DateTime         @default(now())
+  history          MessageHistory[]
+}
+
+model MessageHistory {
+  id         String   @id @default(uuid())
+  messageId  String
+  employeeId String?
+  action     String
+  createdAt  DateTime @default(now())
+
+  message  Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+}
+
+model Employee {
+  id             String           @id @default(uuid())
+  discordId      String           @unique
+  username       String
+  globalName     String?
+  avatar         String?
+  role           String           @default("WORKER")
+  permissions    String[]
+  createdAt      DateTime         @default(now())
+  lastLogin      DateTime?
+  messageHistory MessageHistory[]
+  auditLogs      AuditLog[]
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  employeeId String?
+  action     String
+  target     String?
+  createdAt  DateTime @default(now())
+
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+}
+
+enum EventStatus {
+  PLANNED
+  IN_PROGRESS
+  CLIENT_REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum EventPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}

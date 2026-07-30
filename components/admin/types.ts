@@ -27,7 +27,6 @@ export type AdminUser = {
 };
 
 
-
 export type Employee = {
 
   id: string;
@@ -58,14 +57,34 @@ export type Employee = {
 
 export type MessageHistory = {
 
-  id: string;
+  id:string;
 
-  action: string;
+  messageId:string;
 
-  date: string;
+  action:string;
+
+  createdAt:string;
+
+  employeeId:string | null;
+
+
+  employee?: {
+
+    id:string;
+
+    discordId:string;
+
+    username:string;
+
+    globalName:string | null;
+
+    avatar:string | null;
+
+    role:string;
+
+  } | null;
 
 };
-
 
 
 export type ContactMessage = {

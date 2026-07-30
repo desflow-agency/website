@@ -75,31 +75,40 @@ export function MessagesView() {
         id: string,
         data: any
     ) {
-
-
-        await fetch(
+    
+        const res = await fetch(
             `/api/admin/messages/${id}`,
             {
-
                 method: "PATCH",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
+    
+                headers:{
+                    "Content-Type":"application/json"
                 },
-
-
+    
                 body: JSON.stringify(data)
-
             }
         );
-
-
-        load();
-
-
+    
+    
+        const updated =
+            await res.json();
+    
+    
+        console.log(
+            "UPDATED MESSAGE:",
+            updated
+        );
+    
+    
+        setMessages(prev =>
+            prev.map(message =>
+                message.id === id
+                    ? updated
+                    : message
+            )
+        );
+    
     }
-
 
     async function deleteMessage(
         id: string

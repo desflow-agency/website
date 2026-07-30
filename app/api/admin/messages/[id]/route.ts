@@ -1,128 +1,16 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { randomUUID } from "crypto";
+import { prisma } from "@/lib/prisma";
 import { sendDiscordLog } from "@/lib/discord-log";
 
+import {
+  requireAdmin,
+  forbidden,
+  hasPermission
+} from "@/lib/admin-api";
 
-
-const filePath = path.join(
-  process.cwd(),
-  "data",
-  "messages.json"
-);
-
-
-
-const employeesPath = path.join(
-  process.cwd(),
-  "data",
-  "employees.json"
-);
-
-
-
-
-
-function getMessages(){
-
-
-  if(!fs.existsSync(filePath)){
-
-
-    fs.mkdirSync(
-      path.dirname(filePath),
-      {
-        recursive:true
-      }
-    );
-
-
-    fs.writeFileSync(
-      filePath,
-      "[]"
-    );
-
-  }
-
-
-
-  const file =
-    fs.readFileSync(
-      filePath,
-      "utf-8"
-    );
-
-
-  return JSON.parse(file);
-
-
-}
-
-
-
-
-
-
-function saveMessages(
-  data:any[]
-){
-
-
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(
-      data,
-      null,
-      2
-    )
-  );
-
-
-}
-
-
-
-
-
-
-
-function getEmployee(
-  id:string
-){
-
-
-  if(
-    !fs.existsSync(employeesPath)
-  ){
-
-    return null;
-
-  }
-
-
-
-  const employees =
-    JSON.parse(
-      fs.readFileSync(
-        employeesPath,
-        "utf-8"
-      )
-    );
-
-
-
-  return employees.find(
-    (employee:any)=>
-      employee.id === id
-  );
-
-
-}
-
-
-
-
+import {
+  PERMISSIONS
+} from "@/lib/permissions";
 
 
 
@@ -130,11 +18,11 @@ function getEmployee(
 // PATCH - aktualizacja zgłoszenia
 
 export async function PATCH(
-  req:Request,
-  context:{
-    params:Promise<{
-      id:string
-    }>
+  req: Request,
+  context: {
+    params: Promise<{
+      id:string;
+    }>;
   }
 ){
 
@@ -142,278 +30,461 @@ export async function PATCH(
 try{
 
 
-const {
-  id
-} =
-await context.params;
+  const employee =
+    await requireAdmin();
 
 
 
-const body =
-await req.json();
+  if(!employee){
 
+    return forbidden();
 
-
-const messages =
-getMessages();
+  }
 
 
 
 
-const index =
-messages.findIndex(
-(message:any)=>
-  message.id === id
-);
+  if(
+    !hasPermission(
+      employee,
+      PERMISSIONS.MESSAGES_EDIT
+    )
+  ){
 
+    return forbidden();
 
-
-
-if(index === -1){
-
-
-return NextResponse.json(
-{
- error:"Nie znaleziono zgłoszenia"
-},
-{
- status:404
-}
-);
-
-
-}
+  }
 
 
 
 
 
-const old =
-messages[index];
 
-
-const history =
-old.history || [];
-
-
+  const {
+    id
+  } =
+  await context.params;
 
 
 
+
+
+  const body =
+    await req.json();
+
+
+
+
+
+
+    const oldMessage =
+    await prisma.message.findUnique({
+    
+      where:{
+        id
+      }
+    
+    });
+
+
+
+
+
+  if(!oldMessage){
+
+
+    return NextResponse.json(
+
+      {
+        error:"Nie znaleziono zgłoszenia"
+      },
+
+      {
+        status:404
+      }
+
+    );
+
+
+  }
+  // WORKER może edytować tylko swoje zgłoszenia
 
 if(
-body.status &&
-body.status !== old.status
+  employee.role === "WORKER" &&
+  oldMessage.assignedTo !== employee.id
 ){
 
+  return NextResponse.json(
 
-history.push({
+    {
+      error:
+      "Nie możesz edytować tego zgłoszenia"
+    },
 
-id:
-randomUUID(),
+    {
+      status:403
+    }
 
-action:
-`Zmieniono status z ${old.status} na ${body.status}`,
+  );
 
-date:
-new Date().toISOString()
-
-});
+}
 
 
 
-await sendDiscordLog(
 
-"🔄 Zmieniono status zgłoszenia",
 
-`
+
+
+
+
+  /*
+    ZMIANA STATUSU
+  */
+
+
+  if(
+    body.status &&
+    body.status !== oldMessage.status
+  ){
+
+
+
+    await prisma.messageHistory.create({
+
+      data:{
+
+
+        messageId:id,
+
+
+        employeeId:
+        employee.id,
+
+
+
+        action:
+        `Zmieniono status z ${oldMessage.status} na ${body.status}`
+
+
+      }
+
+    });
+
+
+
+
+
+
+
+    await sendDiscordLog(
+
+      "🔄 Zmieniono status zgłoszenia",
+
+      `
 👤 Klient:
-${old.name}
+${oldMessage.name}
+
 
 📧 Email:
-${old.email}
+${oldMessage.email}
+
+
+👨‍💻 Wykonał:
+${employee.globalName || employee.username}
+
 
 📌 Poprzedni:
-${old.status}
+${oldMessage.status}
+
 
 ➡️ Nowy:
 ${body.status}
 `
 
-);
-
-
-}
+    );
 
 
 
-
-
-
-
-if(
-body.assignedTo !== undefined &&
-body.assignedTo !== old.assignedTo
-){
-
-
-
-if(body.assignedTo){
-
-
-
-const employee =
-getEmployee(
-  body.assignedTo
-);
-
-
-
-const employeeName =
-employee?.globalName ||
-employee?.username ||
-employee?.name ||
-body.assignedTo;
-
-
-
-
-
-history.push({
-
-id:
-randomUUID(),
-
-action:
-`Przydzielono zgłoszenie do ${employeeName}`,
-
-employeeId:
-body.assignedTo,
-
-date:
-new Date().toISOString()
-
-});
+  }
 
 
 
 
 
 
-await sendDiscordLog(
 
-"👥 Przydzielono zgłoszenie",
 
-`
+
+  /*
+    PRZYDZIELENIE PRACOWNIKA
+  */
+
+
+  if(
+
+    body.assignedTo !== undefined &&
+
+    body.assignedTo !== oldMessage.assignedTo
+
+  ){
+
+    if(
+      employee.role === "WORKER"
+      ){
+      
+      return NextResponse.json(
+      
+      {
+      error:
+      "Brak uprawnień do przypisywania zgłoszeń"
+      },
+      
+      {
+      status:403
+      }
+      
+      );
+      
+      }
+
+
+
+    if(body.assignedTo){
+
+
+
+      const assignedEmployee =
+        await prisma.employee.findUnique({
+
+          where:{
+            id:body.assignedTo
+          }
+
+        });
+
+
+
+
+
+      const employeeName =
+        assignedEmployee?.globalName ||
+        assignedEmployee?.username ||
+        "Nieznany";
+
+
+
+
+
+
+
+      await prisma.messageHistory.create({
+
+        data:{
+
+
+          messageId:id,
+
+
+          employeeId:
+          employee.id,
+
+
+
+          action:
+          `Przydzielono zgłoszenie do ${employeeName}`
+
+
+        }
+
+      });
+
+
+
+
+
+
+
+      await sendDiscordLog(
+
+        "👥 Przydzielono zgłoszenie",
+
+        `
 👤 Klient:
-${old.name}
+${oldMessage.name}
 
-📧 Email:
-${old.email}
 
-👨‍💻 Nowy opiekun:
+👨‍💻 Wykonał:
+${employee.globalName || employee.username}
+
+
+👥 Nowy opiekun:
 ${employeeName}
-
-🆔 Discord:
-${employee?.discordId || "brak"}
 `
 
-);
+      );
+
+
+
+    }
+    else{
+
+
+
+      await prisma.messageHistory.create({
+
+        data:{
+
+
+          messageId:id,
+
+
+          employeeId:
+          employee.id,
+
+
+
+          action:
+          "Usunięto przypisaną osobę"
+
+
+        }
+
+      });
+
+
+
+    }
+
+
+
+  }
 
 
 
 
 
-}else{
 
 
-history.push({
 
-id:
-randomUUID(),
 
-action:
-"Usunięto przypisaną osobę",
+  const updated =
+    await prisma.message.update({
 
-date:
-new Date().toISOString()
+      where:{
+        id
+      },
 
-});
+
+
+      data:{
+
+
+
+        ...(body.status && {
+
+          status:
+          body.status
+
+        }),
+
+
+
+
+
+        ...(body.assignedTo !== undefined && {
+
+          assignedTo:
+          body.assignedTo || null
+
+        })
+
+
+
+      },
+
+
+
+      include:{
+
+
+        history:{
+
+
+          orderBy:{
+
+
+            createdAt:"desc"
+
+
+          },
+
+
+          include:{
+
+
+            employee:true
+
+
+          }
+
+
+        }
+
+
+      }
+
+
+
+    });
+
+
+
+
+
+
+
+  return NextResponse.json(
+
+    updated
+
+  );
+
+
+
 
 
 }
-
-
-
-
-}
-
-
-
-
-const updated = {
-
-
-...old,
-
-
-...body,
-
-
-history
-
-
-};
-
-
-
-
-
-messages[index] =
-updated;
-
-
-
-saveMessages(
-messages
-);
-
-
-
-
-
-return NextResponse.json(
-updated
-);
-
-
-
-
-}catch(error){
+catch(error){
 
 
 console.error(
-"PATCH MESSAGE ERROR:",
-error
+
+  "PATCH MESSAGE ERROR:",
+
+  error
+
 );
 
 
 
 return NextResponse.json(
-{
-error:"Błąd serwera"
-},
-{
-status:500
-}
+
+  {
+    error:"Błąd serwera"
+  },
+
+  {
+    status:500
+  }
+
 );
 
 
-}
-
 
 }
 
 
+}
 
 
 
@@ -421,79 +492,57 @@ status:500
 
 
 
-// DELETE - usuwanie zgłoszenia
+
+
+
+
+
+// DELETE
 
 export async function DELETE(
-  req:Request,
-  context:{
-    params:Promise<{
-      id:string
-    }>
-  }
+
+req:Request,
+
+context:{
+  params:Promise<{
+    id:string
+  }>
+}
+
 ){
 
 
 try{
 
 
-const {
-  id
-} =
-await context.params;
-
-
-
-
-const messages =
-getMessages();
+  const employee =
+    await requireAdmin();
 
 
 
 
 
-const message =
-messages.find(
-(message:any)=>
-  message.id === id
-);
+  if(!employee){
 
+    return forbidden();
 
-
-
-
-if(!message){
-
-
-return NextResponse.json(
-{
-error:"Nie znaleziono zgłoszenia"
-},
-{
-status:404
-}
-);
-
-
-}
+  }
 
 
 
 
 
 
-const filtered =
-messages.filter(
-(message:any)=>
-  message.id !== id
-);
+  if(
+    !hasPermission(
+      employee,
+      PERMISSIONS.MESSAGES_DELETE
+    )
+  ){
 
+    return forbidden();
 
-
-
-
-saveMessages(
-filtered
-);
+  }
 
 
 
@@ -501,74 +550,159 @@ filtered
 
 
 
-try{
+
+  const {
+    id
+  } =
+  await context.params;
 
 
-await sendDiscordLog(
 
-"🗑️ Usunięto zgłoszenie",
 
-`
+
+
+
+  const message =
+    await prisma.message.findUnique({
+
+      where:{
+        id
+      }
+
+    });
+
+
+
+
+
+
+
+  if(!message){
+
+
+    return NextResponse.json(
+
+      {
+        error:"Nie znaleziono zgłoszenia"
+      },
+
+      {
+        status:404
+      }
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  await prisma.messageHistory.deleteMany({
+
+    where:{
+      messageId:id
+    }
+
+  });
+
+
+
+
+
+
+
+
+  await prisma.message.delete({
+
+    where:{
+      id
+    }
+
+  });
+
+
+
+
+
+
+
+
+
+  await sendDiscordLog(
+
+    "🗑️ Usunięto zgłoszenie",
+
+    `
 👤 Klient:
 ${message.name}
 
+
 📧 Email:
 ${message.email}
+
+
+👨‍💻 Usunął:
+${employee.globalName || employee.username}
+
 
 🆔 ID:
 ${id}
 `
 
-);
+  );
 
 
-}catch(error){
 
 
-console.error(
-"DISCORD LOG ERROR:",
-error
-);
+
+
+
+  return NextResponse.json({
+
+    success:true
+
+  });
+
+
+
+
 
 
 }
+catch(error){
 
-
-
-
-
-
-
-return NextResponse.json({
-
-success:true
-
-});
-
-
-
-
-
-
-}catch(error){
 
 
 console.error(
-"DELETE MESSAGE ERROR:",
-error
+
+  "DELETE MESSAGE ERROR:",
+
+  error
+
 );
+
 
 
 
 
 return NextResponse.json(
-{
-error:"Nie udało się usunąć zgłoszenia"
-},
-{
-status:500
-}
+
+  {
+    error:"Nie udało się usunąć zgłoszenia"
+  },
+
+  {
+    status:500
+  }
+
 );
+
 
 
 }

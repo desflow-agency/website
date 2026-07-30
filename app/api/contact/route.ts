@@ -1,14 +1,6 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { randomUUID } from "crypto";
+import { prisma } from "@/lib/prisma";
 
-
-const filePath = path.join(
-  process.cwd(),
-  "data",
-  "messages.json"
-);
 
 
 const webhook =
@@ -20,7 +12,10 @@ const suspiciousWebhook =
 
 
 
+
+
 const badWords = [
+
   "kurwa",
   "chuj",
   "jebac",
@@ -28,20 +23,32 @@ const badWords = [
   "pierdol",
   "idiota",
   "debil",
+
 ];
 
 
 
-function checkMessage(text:string){
+
+
+
+function checkMessage(
+  text:string
+){
+
 
   const lower =
     text.toLowerCase();
 
 
+
+
   const found =
-    badWords.some(word =>
+    badWords.some(
+      word =>
       lower.includes(word)
     );
+
+
 
 
   const spam =
@@ -50,100 +57,133 @@ function checkMessage(text:string){
 
 
 
+
+
   return {
+
     suspicious:
       found || spam,
 
+
     reason:
       found
-        ? "Wykryto wulgaryzmy"
-        : spam
-          ? "Podejrzany spam"
-          : null
+      ?
+      "Wykryto wulgaryzmy"
+      :
+      spam
+      ?
+      "Podejrzany spam"
+      :
+      null
+
   };
 
-}
-
-
-
-function getMessages(){
-
-  if(!fs.existsSync(filePath)){
-
-    fs.mkdirSync(
-      path.dirname(filePath),
-      {
-        recursive:true
-      }
-    );
-
-
-    fs.writeFileSync(
-      filePath,
-      "[]"
-    );
-
-  }
-
-
-  return JSON.parse(
-    fs.readFileSync(
-      filePath,
-      "utf-8"
-    )
-  );
 
 }
 
 
 
-function saveMessages(
-  data:any[]
-){
 
-  try {
 
-    fs.writeFileSync(
-      filePath,
-      JSON.stringify(
-        data,
-        null,
-        2
-      )
-    );
 
-  } catch(error){
-
-    console.error(
-      "SAVE FILE ERROR:",
-      error
-    );
-
-  }
-
-}
 
 
 
 async function sendDiscord(
-  url:string,
+
+  url:string | undefined,
+
   message:any
+
 ){
 
-  await fetch(
-    url,
-    {
-      method:"POST",
-      headers:{
-        "Content-Type":
-          "application/json"
-      },
-      body:
-        JSON.stringify(message)
+
+
+  if(!url){
+
+    console.log(
+      "Brak webhooka Discord"
+    );
+
+    return;
+
+  }
+
+
+
+
+  try{
+
+
+    const response =
+      await fetch(
+
+        url,
+
+        {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+            "application/json"
+
+          },
+
+
+          body:
+
+          JSON.stringify(message)
+
+        }
+
+      );
+
+
+
+
+    if(!response.ok){
+
+
+      console.error(
+
+        "Discord webhook error:",
+
+        await response.text()
+
+      );
+
+
     }
-  );
+
+
+
+
+  }
+  catch(error){
+
+
+    console.error(
+
+      "DISCORD ERROR:",
+
+      error
+
+    );
+
+
+  }
+
+
 
 }
+
+
+
+
+
+
 
 
 
@@ -151,7 +191,9 @@ export async function POST(
   req:Request
 ){
 
+
 try{
+
 
 
 const formData =
@@ -159,294 +201,497 @@ const formData =
 
 
 
-if(formData.get("website")){
 
- return NextResponse.json({
-   success:true
- });
+
+// honeypot
+
+if(
+  formData.get("website")
+){
+
+
+  return NextResponse.json({
+
+    success:true
+
+  });
+
 
 }
+
+
+
+
 
 
 
 const name =
- String(
+String(
   formData.get("name") || ""
- );
-
-
-const email =
- String(
-  formData.get("email") || ""
- );
-
-
-const phone =
- String(
-  formData.get("phone") || ""
- );
-
-
-const company =
- String(
-  formData.get("company") || ""
- );
-
-
-const body =
- String(
-  formData.get("body") || ""
- );
-
-
-
-const filter =
- checkMessage(body);
-
-
-
-const messages =
- getMessages();
-
-
-
-const newMessage = {
-
- id:
- randomUUID(),
-
- name,
-
- email,
-
- phone,
-
- company,
-
- body,
-
-
- status:
- "NEW",
-
-
- assignedTo:
- null,
-
-
- suspicious:
- filter.suspicious,
-
-
- suspiciousReason:
- filter.reason,
-
-
- createdAt:
- new Date().toISOString(),
-
-
- history:[
-
- {
-  id:
-  randomUUID(),
-
-  action:
-  "Utworzono zgłoszenie",
-
-  date:
-  new Date().toISOString()
- }
-
- ]
-
-};
-
-
-
-messages.push(
- newMessage
 );
 
 
-try {
 
-  console.log(
-    "PRZED ZAPISEM",
-    messages.length
-    );
-    
-    
-    saveMessages(
-     messages
-    );
-    
-    
-    console.log(
-    "PO ZAPISIE"
-    );
-
-} catch(error){
-
-  console.error(
-    "BŁĄD ZAPISU:",
-    error
-  );
-
-}
+const email =
+String(
+  formData.get("email") || ""
+);
 
 
 
-const embed = {
-
-title:
- filter.suspicious
- ?
- "⚠️ Podejrzane zgłoszenie"
- :
- "📩 Nowe zgłoszenie - Desflow",
+const phone =
+String(
+  formData.get("phone") || ""
+);
 
 
-color:
- filter.suspicious
- ?
- 0xff0000
- :
- 0x5b5cf0,
+
+const company =
+String(
+  formData.get("company") || ""
+);
 
 
-fields:[
 
-{
- name:"👤 Klient",
- value:name || "Brak",
- inline:true
-},
-
-{
- name:"📧 Email",
- value:email || "Brak",
- inline:true
-},
-
-{
- name:"📞 Telefon",
- value:phone || "Brak",
- inline:true
-},
-
-{
- name:"🏢 Firma",
- value:company || "Brak",
- inline:true
-},
-
-{
- name:"💬 Wiadomość",
- value:
- body.substring(0,1000)
-}
-
-],
-
-footer:{
- text:
- filter.suspicious
- ?
- `Powód: ${filter.reason}`
- :
- "Desflow • Kontakt"
-},
+const body =
+String(
+  formData.get("body") || ""
+);
 
 
-timestamp:
- new Date().toISOString()
 
-};
+
 
 
 
 if(
- filter.suspicious &&
- suspiciousWebhook
+  !name ||
+  !email ||
+  !body
 ){
-
- await sendDiscord(
-  suspiciousWebhook,
-  {
-   content:
-    "🚨 Podejrzana wiadomość",
-   embeds:[
-    embed
-   ]
-  }
- );
-
-
-}
-else if(webhook){
-
-
-await sendDiscord(
- webhook,
- {
-  content:
-   "@everyone",
-
-  allowed_mentions:{
-   parse:[
-    "everyone"
-   ]
-  },
-
-  embeds:[
-   embed
-  ]
-
- }
-);
-
-
-}
-
-
-
-console.log(
-  "NOWE ZGLOSZENIE:",
-  newMessage
-  );
-return NextResponse.json({
-
- success:true
-
-});
-
-
-
-}catch(error){
-
-
-console.error(
- "CONTACT ERROR:",
- error
-);
 
 
 return NextResponse.json(
 
 {
- error:
- "Server error"
+
+error:
+"Brak wymaganych danych"
+
 },
 
 {
- status:500
+
+status:400
+
 }
 
 );
 
 
 }
+
+
+
+
+
+
+
+
+const filter =
+checkMessage(body);
+
+
+
+
+
+
+
+
+
+/*
+  ZAPIS DO NEON
+*/
+
+
+const newMessage =
+
+await prisma.message.create({
+
+data:{
+
+
+
+name,
+
+
+email,
+
+
+
+phone:
+phone || null,
+
+
+
+company:
+company || null,
+
+
+
+body,
+
+
+
+status:
+"NEW",
+
+
+
+suspicious:
+filter.suspicious,
+
+
+
+suspiciousReason:
+filter.reason,
+
+
+
+history:{
+
+
+create:{
+
+
+action:
+"Utworzono zgłoszenie"
+
+
+}
+
+
+}
+
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+console.log(
+
+"NOWE ZGŁOSZENIE:",
+
+newMessage.id
+
+);
+
+
+
+
+
+
+
+
+
+const embed = {
+
+
+
+title:
+
+filter.suspicious
+
+?
+
+"⚠️ Podejrzane zgłoszenie"
+
+:
+
+"📩 Nowe zgłoszenie - Desflow",
+
+
+
+
+
+color:
+
+filter.suspicious
+
+?
+
+0xff0000
+
+:
+
+0x5b5cf0,
+
+
+
+
+
+
+
+fields:[
+
+
+
+{
+
+name:"👤 Klient",
+
+value:name,
+
+inline:true
+
+},
+
+
+
+{
+
+name:"📧 Email",
+
+value:email,
+
+inline:true
+
+},
+
+
+
+{
+
+name:"📞 Telefon",
+
+value:phone || "Brak",
+
+inline:true
+
+},
+
+
+
+{
+
+name:"🏢 Firma",
+
+value:company || "Brak",
+
+inline:true
+
+},
+
+
+
+{
+
+name:"💬 Wiadomość",
+
+value:
+body.substring(0,1000)
+
+}
+
+
+
+],
+
+
+
+
+
+footer:{
+
+
+text:
+
+filter.suspicious
+
+?
+
+`Powód: ${filter.reason}`
+
+:
+
+"Desflow • Kontakt"
+
+
+
+},
+
+
+
+
+timestamp:
+
+new Date().toISOString()
+
+
+
+};
+
+
+
+
+
+
+
+
+
+if(
+
+filter.suspicious &&
+
+suspiciousWebhook
+
+){
+
+
+
+await sendDiscord(
+
+suspiciousWebhook,
+
+{
+
+
+content:
+
+"🚨 Podejrzana wiadomość",
+
+
+
+embeds:[
+
+embed
+
+]
+
+
+}
+
+
+);
+
+
+
+}
+else{
+
+
+
+await sendDiscord(
+
+webhook,
+
+{
+
+
+content:
+
+"@everyone",
+
+
+
+allowed_mentions:{
+
+
+parse:[
+
+"everyone"
+
+]
+
+},
+
+
+
+embeds:[
+
+embed
+
+]
+
+
+}
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+return NextResponse.json({
+
+success:true,
+
+id:newMessage.id
+
+});
+
+
+
+
+
+
+}
+catch(error){
+
+
+
+console.error(
+
+"CONTACT ERROR:",
+
+error
+
+);
+
+
+
+
+return NextResponse.json(
+
+{
+
+error:
+
+"Server error"
+
+},
+
+{
+
+status:500
+
+}
+
+);
+
+
+
+}
+
 
 }

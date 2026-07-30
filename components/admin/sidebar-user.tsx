@@ -1,23 +1,17 @@
 "use client";
 
-
 type Props = {
-
-user:{
-name?:string | null;
-
-image?:string | null;
-
-role?:string;
-
-}
-
+  user:{
+    name?: string | null;
+    image?: string | null;
+    role?: string;
+  };
 };
 
 
 export function SidebarUser({
-user
-}:Props){
+  user
+}: Props){
 
 
 return (
@@ -45,11 +39,12 @@ gap-3
 <img
 
 src={
-user.image ||
-"/avatar.png"
+  user.image ?? "https://cdn.discordapp.com/embed/avatars/0.png"
 }
 
 alt="avatar"
+
+referrerPolicy="no-referrer"
 
 className="
 h-10
@@ -57,8 +52,8 @@ w-10
 rounded-full
 object-cover
 "
-
 />
+
 
 
 
@@ -106,6 +101,5 @@ user.role ||
 </div>
 
 );
-
 
 }

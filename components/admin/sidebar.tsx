@@ -31,24 +31,12 @@ import type {
 
 
 
-type Props = {
 
-    user:{
-        name?:string|null;
+type Employee = {
 
-        image?:string|null;
+    role:string;
 
-        role?:string;
-    };
-
-
-    activeTab:AdminTab;
-
-
-    setTab:
-    (
-        tab:AdminTab
-    )=>void;
+    permissions:string[];
 
 };
 
@@ -57,45 +45,35 @@ type Props = {
 
 
 
-
-const links = [
-
-
-{
-    name:"Dashboard",
-
-    icon:LayoutDashboard,
-
-    tab:"dashboard"
-
-},
+type Props = {
 
 
+    user:{
 
-{
-    name:"Zgłoszenia",
+        name?:string|null;
 
-    icon:MessageSquare,
+        image?:string|null;
 
-    tab:"messages"
+        role?:string;
 
-},
+    };
+
+
+    employee?:Employee|null;
 
 
 
-{
-    name:"Pracownicy",
-
-    icon:Users,
-
-    tab:"employees"
-
-},
+    activeTab:AdminTab;
 
 
 
-] as const;
+    setTab:
+    (
+        tab:AdminTab
+    )=>void;
 
+
+};
 
 
 
@@ -108,11 +86,90 @@ export function Sidebar({
 
     user,
 
+    employee,
+
     activeTab,
 
     setTab
 
+
 }:Props){
+
+
+
+
+
+
+function can(
+    permission:string
+){
+
+
+    if(!employee){
+
+        return false;
+
+    }
+
+
+
+    if(employee.role === "ADMIN"){
+
+        return true;
+
+    }
+
+
+
+    return (
+        employee.permissions || []
+    )
+    .includes(
+        permission
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+const links = [
+    {
+        name:"Dashboard",
+        icon:LayoutDashboard,
+        tab:"dashboard",
+        show:true
+    },
+    {
+        name:"Zgłoszenia",
+        icon:MessageSquare,
+        tab:"messages",
+        show:
+        can(
+            "messages.view"
+        )
+    },
+
+    {
+        name:"Pracownicy",
+        icon:Users,
+        tab:"employees",
+        show:
+        can(
+            "employees.view"
+        )
+    },
+    ] as const;
+
+
+
+
 
 
 
@@ -161,18 +218,27 @@ px-4
 
 
 
+
 {
 
-links.map(
+links
+
+.filter(
+link=>link.show
+)
+
+.map(
 (link)=>{
 
 
 const Icon =
-    link.icon;
+link.icon;
+
 
 
 
 return (
+
 
 
 <button
@@ -196,7 +262,6 @@ link.tab
 
 
 
-
 className={`
 
 flex
@@ -209,11 +274,9 @@ py-3
 text-sm
 font-medium
 transition-all
-duration-200
 
 
 ${
-
 activeTab === link.tab
 
 ?
@@ -238,10 +301,7 @@ activeTab === link.tab
 
 size={20}
 
-strokeWidth={2}
-
 />
-
 
 
 
@@ -253,8 +313,6 @@ link.name
 }
 
 </span>
-
-
 
 
 
@@ -272,10 +330,8 @@ link.name
 
 
 
-
-
-
 </nav>
+
 
 
 

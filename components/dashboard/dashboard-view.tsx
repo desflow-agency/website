@@ -5,8 +5,15 @@ import {
   Users,
   MessageSquare,
   Clock,
-  CheckCircle
+  CheckCircle,
+  LogIn
 } from "lucide-react";
+
+
+import {
+  useEffect,
+  useState
+} from "react";
 
 
 import {
@@ -25,6 +32,7 @@ import {
 export function DashboardView(){
 
 
+
   const {
     employees
   } = useEmployees();
@@ -32,9 +40,46 @@ export function DashboardView(){
 
 
 
+
   const {
     messages
   } = useMessages();
+
+
+
+
+
+  const [
+    logins,
+    setLogins
+  ] = useState<any[]>([]);
+
+
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    fetch(
+      "/api/admin/dashboard/logins"
+    )
+    .then(
+      res=>res.json()
+    )
+    .then(
+      data=>setLogins(data)
+    );
+
+
+  },[]);
+
+
+
+
 
 
 
@@ -49,11 +94,13 @@ export function DashboardView(){
 
 
 
+
   const inProgress =
     messages.filter(
       message =>
       message.status === "IN_PROGRESS"
     ).length;
+
 
 
 
@@ -68,19 +115,25 @@ export function DashboardView(){
 
 
 
+
+
+
+
   const cards = [
+
 
     {
 
       title:"Pracownicy",
 
       value:
-        employees.length,
+      employees.length,
 
       icon:
-        Users
+      Users
 
     },
+
 
 
     {
@@ -88,12 +141,13 @@ export function DashboardView(){
       title:"Nowe zgłoszenia",
 
       value:
-        newMessages,
+      newMessages,
 
       icon:
-        MessageSquare
+      MessageSquare
 
     },
+
 
 
     {
@@ -101,12 +155,13 @@ export function DashboardView(){
       title:"W trakcie",
 
       value:
-        inProgress,
+      inProgress,
 
       icon:
-        Clock
+      Clock
 
     },
+
 
 
     {
@@ -114,10 +169,10 @@ export function DashboardView(){
       title:"Zakończone",
 
       value:
-        completed,
+      completed,
 
       icon:
-        CheckCircle
+      CheckCircle
 
     },
 
@@ -130,11 +185,18 @@ export function DashboardView(){
 
 
 
+
+
 return (
+
 
 <div className="
 space-y-6
 ">
+
+
+
+
 
 
 
@@ -151,6 +213,7 @@ Dashboard
 </h2>
 
 
+
 <p className="
 text-sm
 text-gray-500
@@ -162,6 +225,10 @@ Najważniejsze informacje
 
 
 </div>
+
+
+
+
 
 
 
@@ -203,11 +270,14 @@ card.icon
 
 )
 )
+
 }
 
 
 
 </div>
+
+
 
 
 
@@ -223,12 +293,18 @@ lg:grid-cols-2
 
 
 
+
+
+
+
+
 <div className="
 rounded-2xl
 border
 bg-white
 p-5
 ">
+
 
 
 <h3 className="
@@ -239,6 +315,8 @@ mb-4
 Ostatnie zgłoszenia
 
 </h3>
+
+
 
 
 
@@ -278,6 +356,7 @@ font-medium
 </p>
 
 
+
 <p className="
 text-sm
 text-gray-500
@@ -286,6 +365,7 @@ text-gray-500
 {message.email}
 
 </p>
+
 
 
 <span className="
@@ -297,19 +377,25 @@ text-xs
 </span>
 
 
+
 </div>
 
 
 )
+
 )
 
 }
 
 
+
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -325,6 +411,7 @@ p-5
 ">
 
 
+
 <h3 className="
 font-bold
 mb-4
@@ -333,6 +420,8 @@ mb-4
 Pracownicy
 
 </h3>
+
+
 
 
 
@@ -380,6 +469,7 @@ rounded-full
 
 
 
+
 <div>
 
 
@@ -395,6 +485,7 @@ employee.username
 </p>
 
 
+
 <p className="
 text-xs
 text-gray-500
@@ -408,22 +499,198 @@ text-gray-500
 </div>
 
 
+
 </div>
 
 
 )
+
 )
 
 }
 
 
-</div>
 
 
 </div>
 
 
 
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div className="
+rounded-2xl
+border
+bg-white
+p-5
+">
+
+
+
+<div className="
+flex
+items-center
+gap-2
+mb-5
+">
+
+
+<LogIn size={20}/>
+
+
+
+<h3 className="
+font-bold
+">
+
+Ostatnie logowania
+
+</h3>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div className="
+space-y-3
+">
+
+
+{
+
+logins.length === 0 && (
+
+
+<p className="
+text-sm
+text-gray-500
+">
+
+Brak logowań
+
+</p>
+
+
+)
+
+
+}
+
+
+
+
+
+
+{
+logins.map(
+employee=>(
+
+
+<div
+
+key={
+employee.id
+}
+
+className="
+flex
+items-center
+justify-between
+rounded-xl
+bg-gray-50
+p-3
+"
+
+>
+
+
+<div className="
+flex
+items-center
+gap-3
+">
+
+
+
+<img
+
+src={
+employee.avatar ||
+"/avatar.png"
+}
+
+className="
+h-10
+w-10
+rounded-full
+"
+
+/>
+
+
+
+
+<div>
+
+
+<p className="
+font-medium
+">
+
+{
+employee.globalName ||
+employee.username
+}
+
+</p>
+
+
+
+<p className="
+text-xs
+text-gray-500
+">
+
+Ostatnio:
+
+{
+employee.lastLogin
+?
+new Date(
+employee.lastLogin
+).toLocaleString()
+:
+"Brak"
+}
+
+
+</p>
+
 
 
 </div>
@@ -432,11 +699,48 @@ text-gray-500
 
 
 </div>
+
+
+
+
+
+
+</div>
+
+
+)
+
+)
+
+}
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
 
 );
 
 
+
 }
+
+
 
 
 
@@ -452,6 +756,7 @@ value,
 
 Icon
 
+
 }:{
 
 title:string;
@@ -463,7 +768,9 @@ Icon:any;
 }){
 
 
+
 return (
+
 
 <div className="
 rounded-2xl
@@ -473,11 +780,13 @@ p-5
 ">
 
 
+
 <div className="
 flex
 items-center
 justify-between
 ">
+
 
 
 <div>
@@ -493,6 +802,7 @@ text-gray-500
 </p>
 
 
+
 <h3 className="
 mt-1
 text-3xl
@@ -504,7 +814,10 @@ font-bold
 </h3>
 
 
+
 </div>
+
+
 
 
 
@@ -523,12 +836,20 @@ p-3
 
 
 
-</div>
 
 
 </div>
+
+
+
+
+
+</div>
+
+
 
 );
+
 
 
 }
