@@ -270,9 +270,31 @@ messages.push(
 );
 
 
-saveMessages(
- messages
-);
+try {
+
+  console.log(
+    "PRZED ZAPISEM",
+    messages.length
+    );
+    
+    
+    saveMessages(
+     messages
+    );
+    
+    
+    console.log(
+    "PO ZAPISIE"
+    );
+
+} catch(error){
+
+  console.error(
+    "BŁĄD ZAPISU:",
+    error
+  );
+
+}
 
 
 
@@ -390,7 +412,10 @@ await sendDiscord(
 
 
 
-
+console.log(
+  "NOWE ZGLOSZENIE:",
+  newMessage
+  );
 return NextResponse.json({
 
  success:true
