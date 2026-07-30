@@ -1,0 +1,22 @@
+[
+  {
+    "id": "0c90790b-60d4-4e7a-8bf2-920e75b85306",
+    "discordId": "693836391578075189",
+    "username": "katastrofa",
+    "globalName": "katastrofa",
+    "avatar": "https://cdn.discordapp.com/avatars/693836391578075189/20999109bf6f53653eb1e3107fdd42e8.png?size=256",
+    "role": "ADMIN",
+    "permissions": [],
+    "createdAt": "2026-07-30T14:06:21.539Z"
+  },
+  {
+    "id": "ca8bb442-b9ae-4a38-bca5-1befe3c6479f",
+    "discordId": "644931401732587524",
+    "username": "catwithoutshoes",
+    "globalName": "george",
+    "avatar": "https://cdn.discordapp.com/avatars/644931401732587524/f97f470687d0d4151367ea381a3c714c.png?size=256",
+    "role": "ADMIN",
+    "permissions": [],
+    "createdAt": "2026-07-30T14:14:11.170Z"
+  }
+]
