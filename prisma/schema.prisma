@@ -8,18 +8,21 @@ datasource db {
 }
 
 model Message {
-  id               String           @id @default(uuid())
+  id               String  @id @default(uuid())
   name             String
   email            String
   phone            String?
   company          String?
   body             String
-  status           String           @default("NEW")
+  status           String  @default("NEW")
   assignedTo       String?
-  suspicious       Boolean          @default(false)
+  suspicious       Boolean @default(false)
   suspiciousReason String?
-  createdAt        DateTime         @default(now())
-  history          MessageHistory[]
+
+  createdAt DateTime @default(now())
+
+  history MessageHistory[]
+  events  CalendarEvent[]
 }
 
 model MessageHistory {
@@ -34,17 +37,19 @@ model MessageHistory {
 }
 
 model Employee {
-  id             String           @id @default(uuid())
-  discordId      String           @unique
-  username       String
-  globalName     String?
-  avatar         String?
-  role           String           @default("WORKER")
-  permissions    String[]
-  createdAt      DateTime         @default(now())
-  lastLogin      DateTime?
+  id          String    @id @default(uuid())
+  discordId   String    @unique
+  username    String
+  globalName  String?
+  avatar      String?
+  role        String    @default("WORKER")
+  permissions String[]
+  createdAt   DateTime  @default(now())
+  lastLogin   DateTime?
+
   messageHistory MessageHistory[]
   auditLogs      AuditLog[]
+  calendarEvents CalendarEvent[]
 }
 
 model AuditLog {
@@ -59,9 +64,13 @@ model AuditLog {
 
 enum EventStatus {
   PLANNED
+
   IN_PROGRESS
+
   CLIENT_REVIEW
+
   COMPLETED
+
   CANCELLED
 }
 
@@ -70,4 +79,34 @@ enum EventPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+model CalendarEvent {
+  id String @id @default(uuid())
+
+  title String
+
+  description String?
+
+  type String @default("TASK")
+
+  status EventStatus @default(PLANNED)
+
+  priority EventPriority @default(MEDIUM)
+
+  start DateTime
+
+  end DateTime?
+
+  color String?
+
+  messageId String?
+
+  message Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  employeeId String?
+
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
 }

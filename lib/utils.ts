@@ -1,34 +1,69 @@
-export const cn = (
-  ...values: (string | undefined | false)[]
-) => {
-  return values.filter(Boolean).join(" ");
-};
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-export const money = (value: number) => {
-  return new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
-    maximumFractionDigits: 0,
-  }).format(value);
-};
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+
+
+// ==============================
+// FORMATOWANIE CEN
+// ==============================
+
+export function money(value: number) {
+
+  return new Intl.NumberFormat(
+    "pl-PL",
+    {
+      style: "currency",
+      currency: "PLN",
+      maximumFractionDigits: 0,
+    }
+  ).format(value);
+
+}
+
+
+
+
+// ==============================
+// USŁUGI AGENCJI
+// ==============================
+
 
 export const services = [
+
   [
-    "Projektowanie grafik",
-    "Systemy wizualne, branding i materiały, których nie da się przewinąć.",
-    50,
-    "Sparkles",
+    "Grafika komputerowa",
+    "Profesjonalne grafiki reklamowe, identyfikacja wizualna oraz materiały marketingowe.",
+    500,
+    "Sparkles"
   ],
+
+
   [
-    "Montaż filmów",
-    "Dynamiczne reelsy i filmy, które zatrzymują uwagę.",
-    75,
-    "Play",
+    "Montaż video",
+    "Dynamiczny montaż filmów reklamowych, rolek oraz materiałów social media.",
+    800,
+    "Play"
   ],
+
+
   [
-    "Social Media Marketing",
-    "Strategia, content i community w jednym spójnym procesie.",
-    150,
-    "MessageCircle",
+    "Social Media",
+    "Prowadzenie profili, przygotowanie contentu i zwiększanie zasięgów.",
+    1200,
+    "Target"
   ],
+
+
+  [
+    "Strony internetowe",
+    "Nowoczesne strony WWW oraz aplikacje tworzone w Next.js.",
+    2500,
+    "Code2"
+  ]
+
 ] as const;

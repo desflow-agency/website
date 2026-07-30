@@ -1,7 +1,10 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -45,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="pl"
-      className={poppins.className}
+      className={cn(poppins.className, "font-sans", geist.variable)}
     >
       <body>{children}</body>
     </html>

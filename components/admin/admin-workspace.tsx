@@ -12,6 +12,7 @@ import { Sidebar } from "./sidebar";
 import { DashboardView } from "../dashboard/dashboard-view";
 import { MessagesView } from "./messages/messages-view";
 import { EmployeesView } from "./employees/employee-view";
+import { CalendarView } from "./calendar/calendar-view";
 
 
 type AdminEmployee = {
@@ -149,7 +150,13 @@ export function AdminWorkspace({
                 }
 
 
+{
+                    tab === "calendar" && (
 
+                        <CalendarView />
+
+                    )
+                }
 
 
 

@@ -2,6 +2,7 @@ export type AdminTab =
   | "dashboard"
   | "messages"
   | "employees"
+  | "calendar"
 
 
 

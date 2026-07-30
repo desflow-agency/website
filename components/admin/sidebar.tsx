@@ -5,6 +5,7 @@ import {
     LayoutDashboard,
     MessageSquare,
     Users,
+    Calendar,
 } from "lucide-react";
 
 
@@ -163,6 +164,15 @@ const links = [
         show:
         can(
             "employees.view"
+        )
+    },
+    {
+        name:"Kalendarz",
+        icon:Calendar,
+        tab:"calendar",
+        show:
+        can(
+            "calendar.view"
         )
     },
     ] as const;
