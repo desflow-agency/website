@@ -101,14 +101,25 @@ function saveMessages(
   data:any[]
 ){
 
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(
-      data,
-      null,
-      2
-    )
-  );
+  try {
+
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify(
+        data,
+        null,
+        2
+      )
+    );
+
+  } catch(error){
+
+    console.error(
+      "SAVE FILE ERROR:",
+      error
+    );
+
+  }
 
 }
 
