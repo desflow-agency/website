@@ -26,7 +26,7 @@ const projects = [
     title: "Surova",
     category: "grafika",
     media:
-      "https://cdn.discordapp.com/attachments/1530525803513647156/1532139681242681424/Frame_472.png?ex=6a6bc3c5&is=6a6a7245&hm=3abd13a9001bb8229f751bd44c209d8c87e9c194534c0079da5c31f1ccce505b&",
+      "https://cdn.discordapp.com/attachments/1530525803513647156/1532139681242681424/Frame_472.png?ex=6a706105&is=6a6f0f85&hm=80390862fb60127791a7d5f2a0ba1bc965d47ab118148ba63d988a0c5604095c&",
   },
   {
     title: "AdviceBot | TikTok #1",

@@ -254,7 +254,7 @@ export function HeroSection() {
 
 
 
-            Ponad 50 zrealizowanych projektów
+            Ponad 250 zrealizowanych projektów
 
 
 
@@ -418,9 +418,9 @@ function CreativeShowcase({
       className="
       relative
       mx-auto
-      h-[560px]
+      h-140
       w-full
-      max-w-[540px]
+      max-w-135
       "
 
     >
@@ -543,7 +543,7 @@ function CreativeShowcase({
         absolute
         left-1/2
         top-1/2
-        w-[360px]
+        w-90
         -translate-x-1/2
         -translate-y-1/2
         rounded-[35px]
@@ -693,7 +693,7 @@ function CreativeShowcase({
           className={`
           mt-6
           rounded-3xl
-          bg-gradient-to-br
+          bg-linear-to-br
           ${current.color}
           p-6
           text-white
