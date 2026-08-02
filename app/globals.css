@@ -107,7 +107,7 @@ main > section:nth-child(5) {
   max-width: 570px;
   font-size: 18px;
   line-height: 1.6;
-  color: var(--muted);
+  color: rgb(63, 63, 63);
 }
 
 .btn {
