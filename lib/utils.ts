@@ -6,12 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-
-
-// ==============================
-// FORMATOWANIE CEN
-// ==============================
-
 export function money(value: number) {
 
   return new Intl.NumberFormat(
@@ -26,19 +20,12 @@ export function money(value: number) {
 }
 
 
-
-
-// ==============================
-// USŁUGI AGENCJI
-// ==============================
-
-
 export const services = [
 
   [
     "Grafika komputerowa",
     "Profesjonalne grafiki reklamowe, identyfikacja wizualna oraz materiały marketingowe.",
-    500,
+    50,
     "Sparkles"
   ],
 
@@ -46,7 +33,7 @@ export const services = [
   [
     "Montaż video",
     "Dynamiczny montaż filmów reklamowych, rolek oraz materiałów social media.",
-    800,
+    75,
     "Play"
   ],
 
@@ -54,16 +41,8 @@ export const services = [
   [
     "Social Media",
     "Prowadzenie profili, przygotowanie contentu i zwiększanie zasięgów.",
-    1200,
+    150,
     "Target"
   ],
-
-
-  [
-    "Strony internetowe",
-    "Nowoczesne strony WWW oraz aplikacje tworzone w Next.js.",
-    2500,
-    "Code2"
-  ]
 
 ] as const;

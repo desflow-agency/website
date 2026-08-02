@@ -49,14 +49,14 @@ export function PublicSite() {
               controls
               autoPlay
               playsInline
-              className="max-h-full max-w-full rounded-xl"
+              className="max-h-[90vh] w-auto max-w-md sm:max-w-lg md:max-w-xl rounded-xl object-contain"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
             <img
               src={lightboxMedia}
               alt="Powiększony projekt"
-              className="max-h-full max-w-full rounded-xl"
+              className="max-h-[90vh] max-w-[90vw] h-auto w-auto rounded-xl object-contain"
               onClick={(e) => e.stopPropagation()}
             />
           )}

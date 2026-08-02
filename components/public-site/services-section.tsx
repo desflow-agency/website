@@ -37,7 +37,7 @@ import {
           <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {services.map(([title, description, price, icon], index) => {
               const Icon = icons[icon] || Sparkles;
-              const discount = index === 0 ? 30 : 0;
+              const discount = index === 2 ? 40 : 0;
   
               return (
                 <article
