@@ -22,7 +22,7 @@ const services = [
     result:
       "+84% rozpoznawalności",
     color:
-      "from-purple-500 to-indigo-500",
+      "from-purple-500 to-purple-600",
   },
 
   {
@@ -34,7 +34,7 @@ const services = [
     result:
       "+120% wyświetleń",
     color:
-      "from-red-500 to-orange-500",
+      "from-orange-500 to-orange-600",
   },
 
   {
@@ -46,7 +46,7 @@ const services = [
     result:
       "+240% zaangażowania",
     color:
-      "from-blue-500 to-cyan-500",
+      "from-blue-500 to-blue-600",
   },
 ];
 
@@ -908,11 +908,11 @@ gap-2
 
                     ?
 
-                    "bg-[#5b5cf0] text-white shadow-lg shadow-[#5b5cf0]/30"
+                    "bg-[#5b5cf0] text-white shadow-lg shadow-[#5b5cf0]/30 cursor-pointer"
 
                     :
 
-                    "bg-gray-100 hover:bg-gray-200"
+                    "bg-gray-100 hover:bg-gray-200 cursor-pointer"
 
                   }
 
@@ -1128,100 +1128,6 @@ text-gray-500
 
 
       </motion.div>
-
-
-
-
-
-
-
-      {/* FLOATING PARTICLES */}
-
-
-
-      {[
-        {
-          left: "10%",
-          top: "15%",
-        },
-        {
-          left: "85%",
-          top: "20%",
-        },
-        {
-          left: "20%",
-          top: "80%",
-        },
-        {
-          left: "75%",
-          top: "75%",
-        },
-        {
-          left: "50%",
-          top: "8%",
-        },
-
-      ].map((particle, index) => (
-
-
-        <motion.span
-
-          key={index}
-
-
-          animate={{
-
-            y: [
-              0,
-              -35,
-              0
-            ],
-
-            opacity: [
-              .2,
-              1,
-              .2
-            ]
-
-          }}
-
-
-          transition={{
-
-            duration:
-              3 + index,
-
-            repeat: Infinity,
-
-            delay:
-              index * .3
-
-          }}
-
-
-          style={{
-
-            left:
-              particle.left,
-
-            top:
-              particle.top
-
-          }}
-
-
-          className="
-absolute
-h-2
-w-2
-rounded-full
-bg-[#5b5cf0]
-"
-
-        />
-
-
-      ))}
 
 
 
