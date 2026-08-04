@@ -328,7 +328,6 @@ main > section:nth-child(5) {
   text-decoration: none;
 }
 
-input,
 textarea {
   width: 100%;
   padding: 13px;
