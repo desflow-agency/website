@@ -100,14 +100,14 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-[0.25em] text-white/40">
               Kontakt
             </h3>
-
+ 
             <div className="mt-6 space-y-4">
 
               <a
-                href="mailto:hello@desflow.pl"
+                href="mailto:kontakt@desflow.pl"
                 className="block text-white/70 transition hover:text-white"
               >
-                hello@desflow.pl
+                kontakt@desflow.pl
               </a>
 
               <div className="flex gap-3 pt-2">

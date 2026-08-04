@@ -315,7 +315,7 @@ export function ContactSection() {
               >
 
 
-                <ContactInfo
+                <ContactInfo 
 
                   icon={
                     <Mail size={20} />
@@ -628,7 +628,6 @@ grid
 gap-5
 "
       >
-
 
 
 
