@@ -112,14 +112,14 @@ export function Footer() {
 
               <div className="flex gap-3 pt-2">
                 <a
-                  href="#"
+                  href="https://www.youtube.com/@desflowpl"
                   className="rounded-full border border-white/10 p-3 text-white/70 transition hover:border-violet-500 hover:bg-violet-500 hover:text-white"
                 >
                   <FaYoutube size={18} />
                 </a>
 
                 <a
-                  href="#"
+                  href="https://www.tiktok.com/@desflow.pl"
                   className="rounded-full border border-white/10 p-3 text-white/70 transition hover:border-violet-500 hover:bg-violet-500 hover:text-white"
                 >
                   <FaTiktok size={18} />
