@@ -418,7 +418,7 @@ function CreativeShowcase({
       className="
       relative
       mx-auto
-      h-140
+      h-0 md:h-140
       w-full
       max-w-135
       "
@@ -450,8 +450,8 @@ function CreativeShowcase({
         }}
 
         className="
+        hidden md:absolute
         pointer-events-none
-        absolute
         h-56
         w-56
         -translate-x-1/2
@@ -498,7 +498,7 @@ function CreativeShowcase({
         }}
 
         className="
-        absolute
+        hidden md:absolute
         inset-20
         rounded-full
         bg-[#5b5cf0]
@@ -540,6 +540,7 @@ function CreativeShowcase({
 
 
         className="
+        hidden md:block
         absolute
         left-1/2
         top-1/2
@@ -993,6 +994,7 @@ absolute
 top-24
 w-52
 rounded-2xl
+hidden md:block
 bg-white
 p-4
 shadow-xl
@@ -1098,6 +1100,7 @@ text-yellow-400
 absolute
 right-0
 bottom-24
+hidden md:block
 rounded-2xl
 bg-white
 p-4
