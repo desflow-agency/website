@@ -116,7 +116,7 @@ export function Footer() {
                   className="rounded-full border border-white/10 p-3 text-white/70 transition hover:border-violet-500 hover:bg-violet-500 hover:text-white"
                 >
                   <FaYoutube size={18} />
-                </a>
+                </a> 
 
                 <a
                   href="https://www.tiktok.com/@desflow.pl"
