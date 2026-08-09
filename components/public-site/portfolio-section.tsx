@@ -147,11 +147,11 @@ export function PortfolioSection({
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full pt-12" id="portfolio">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* HEADER */}
 
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-purple-500">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#5b5cf0]">
           Wybrane realizacje
         </p>
 
@@ -169,7 +169,7 @@ export function PortfolioSection({
               onClick={() => setActiveFilter(filter.value)}
               className={`rounded-full border px-5 py-2 text-sm font-medium transition-all duration-300 ${
                 activeFilter === filter.value
-                  ? "border-purple-500 bg-purple-500 text-black shadow-lg shadow-purple-500/20"
+                  ? "border-[#5b5cf0] bg-[#5b5cf0] text-black shadow-lg shadow-purple-500/20"
                   : "cursor-pointer border-black/10 bg-black/15 text-black/70 hover:border-black/20 hover:bg-black/10 hover:text-gray-600"
               }`}
             >
@@ -375,9 +375,7 @@ export function PortfolioSection({
             items-center
             justify-center
             rounded-full
-            border
-            border-white/20
-            bg-purple-500
+            bg-[#8d8dff]
             text-black
             shadow-[0_8px_30px_rgba(168,85,247,0.35)]
             transition-transform

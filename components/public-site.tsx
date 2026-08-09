@@ -82,10 +82,17 @@ export function PublicSite() {
 
   return (
     <>
-      <main
-        id="home"
-        className="w-full"
-      >
+      {/* ================================================== */}
+      {/* NAVIGATION */}
+      {/* ================================================== */}
+
+      <Navigation />
+
+      {/* ================================================== */}
+      {/* MAIN */}
+      {/* ================================================== */}
+
+      <main id="home">
         <HeroSection />
 
         <ValuesSection />
@@ -104,6 +111,10 @@ export function PublicSite() {
 
         <ContactSection />
       </main>
+
+      {/* ================================================== */}
+      {/* FOOTER */}
+      {/* ================================================== */}
 
       <Footer />
 
@@ -272,10 +283,7 @@ export function PublicSite() {
                   sm:w-11
                 "
               >
-                <X
-                  size={20}
-                  strokeWidth={2}
-                />
+                <X size={20} strokeWidth={2} />
               </button>
             </div>
 
@@ -343,10 +351,7 @@ export function PublicSite() {
                       backdrop-blur-md
                     "
                   >
-                    <Play
-                      size={15}
-                      fill="currentColor"
-                    />
+                    <Play size={15} fill="currentColor" />
                   </div>
                 </div>
               ) : (
