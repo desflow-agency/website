@@ -325,7 +325,7 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
               "członkowie naszego zespołu obsługujący zapytania.",
             ],
           },
-        ],
+        ], 
       },
       {
         id: "poza-eog",
