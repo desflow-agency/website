@@ -1,6 +1,12 @@
 import { AdminWorkspace } from "@/components/admin/admin-workspace";
 import { auth, signIn } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Panel administracyjny",
+  robots: { index: false, follow: false },
+};
 
 
 

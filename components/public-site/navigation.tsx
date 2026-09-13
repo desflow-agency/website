@@ -1,575 +1,213 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowRight,
-  ChevronRight,
-  Menu,
-  X,
-} from "lucide-react";
+import { ArrowRight, ChevronRight, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
-const links = [
-  ["Oferta", "offer"],
-  ["Portfolio", "portfolio"],
-  ["Opinie", "reviews"],
-  ["FAQ", "faq"],
-  ["Kontakt", "contact"],
-] as const;
+import type { Dictionary, Locale } from "@/lib/i18n";
+import { localizePath } from "@/lib/i18n/config";
+import { navSections } from "@/lib/site";
 
-export function Navigation() {
+import { LanguageSwitcher } from "./language-switcher";
+import { ThemeToggle } from "./theme-toggle";
+
+type NavigationText = Pick<Dictionary, "nav" | "common" | "theme" | "language">;
+
+export function Navigation({
+  locale,
+  internalPath,
+  sectionLinksToHome,
+  t,
+}: {
+  locale: Locale;
+  internalPath: string;
+  sectionLinksToHome: boolean;
+  t: NavigationText;
+}) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
+  const home = localizePath(locale, "/");
+  const href = (id: string) => (sectionLinksToHome ? `${home}#${id}` : `#${id}`);
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      setScrolled(window.scrollY > 30);
 
-      setScrolled(scrollY > 30);
-
-      let currentSection = "";
-
-      for (const [, id] of links) {
-        const element = document.getElementById(id);
-
-        if (!element) continue;
-
-        const rect = element.getBoundingClientRect();
-
-        if (rect.top <= 180 && rect.bottom >= 180) {
-          currentSection = id;
-        }
+      let current = "";
+      for (const id of navSections) {
+        const rect = document.getElementById(id)?.getBoundingClientRect();
+        if (rect && rect.top <= 180 && rect.bottom >= 180) current = id;
       }
-
-      setActiveSection(currentSection);
+      setActiveSection(current);
     };
 
     handleScroll();
-
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
 
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
 
-  const closeMenu = () => {
-    setOpen(false);
-  };
+  const closeMenu = () => setOpen(false);
 
   return (
     <motion.header
-      initial={{
-        y: -30,
-        opacity: 0,
-      }}
-      animate={{
-        y: 0,
-        opacity: 1,
-      }}
-      transition={{
-        duration: 0.7,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="
-        fixed
-        inset-x-0
-        top-4
-        z-100
-        flex
-        justify-center
-        px-4
-        sm:top-5
-      "
+      initial={{ y: -30, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-x-0 top-3 z-100 flex justify-center px-3 sm:top-5 sm:px-4"
     >
       <div className="relative w-full max-w-6xl">
-        {/* ================================================== */}
-        {/* NAVBAR */}
-        {/* ================================================== */}
-
-        <motion.nav
-          animate={{
-            height: scrolled ? 64 : 72,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 180,
-            damping: 24,
-          }}
-          className={`
-            relative
-            flex
-            w-full
-            items-center
-            justify-between
-            rounded-[22px]
-            border
-            px-3
-            shadow-[0_15px_50px_rgba(0,0,0,0.08)]
-            backdrop-blur-2xl
-            transition-all
-            duration-500
-            sm:rounded-[26px]
-            sm:px-4
-            ${scrolled
-              ? "border-black/8 bg-white/75"
-              : "border-black/6 bg-white/65"
-            }
-          `}
+        <nav
+          aria-label={t.nav.aria}
+          className={`relative flex h-16 w-full items-center justify-between rounded-2xl border px-3 backdrop-blur-2xl transition-all duration-500 sm:px-4 ${
+            scrolled || open ? "border-line-strong bg-canvas/80 shadow-float" : "border-transparent bg-transparent"
+          }`}
         >
-          {/* SUBTELNY GLOW */}
-
-          <div
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              overflow-hidden
-              rounded-[22px]
-              sm:rounded-[26px]
-            "
-          >
-            <div
-              className="
-                absolute
-                -left-20
-                -top-20
-                h-32
-                w-32
-                rounded-full
-                bg-[#5b5cf0]/10
-                blur-3xl
-              "
-            />
-
-            <div
-              className="
-                absolute
-                -bottom-20
-                right-20
-                h-32
-                w-32
-                rounded-full
-                bg-purple-400/5
-                blur-3xl
-              "
-            />
-          </div>
-
-          {/* ================================================== */}
           {/* LOGO */}
-          {/* ================================================== */}
-
-          <motion.a
-            href="#home"
+          <a
+            href={sectionLinksToHome ? home : "#main"}
             onClick={closeMenu}
-            whileTap={{ scale: 0.96 }}
-            className="
-    relative
-    z-10
-    flex
-    items-center
-    rounded-xl
-    px-2
-    py-2
-  "
+            className="flex items-center gap-2.5 rounded-xl px-1.5 py-1.5"
+            aria-label={t.common.homeAria}
           >
-            <img
-              src="/dfblack.png"
-              alt="Desflow"
-              className="
-      h-9
-      w-auto
-      max-w-37.5
-      object-contain
-      sm:h-10
-    "
-            />
-          </motion.a>
+            <Image src="/dfblack.png" alt="" width={36} height={36} priority className="logo-mark h-8 w-8" />
+            <span className="text-lg font-semibold tracking-tight">desflow</span>
+          </a>
 
-          {/* ================================================== */}
-          {/* DESKTOP LINKS */}
-          {/* ================================================== */}
-
-          <div
-            className="
-              absolute
-              left-1/2
-              hidden
-              -translate-x-1/2
-              items-center
-              gap-1
-              rounded-full
-              border
-              border-black/5
-              bg-black/2.5
-              p-1
-              md:flex
-            "
-          >
-            {links.map(([label, id]) => {
+          {/* LINKI — DESKTOP */}
+          <ul className="mx-auto hidden items-center gap-0.5 rounded-full border border-line bg-ink/[0.03] p-1 lg:flex xl:gap-1">
+            {navSections.map((id) => {
               const active = activeSection === id;
 
               return (
-                <motion.a
-                  key={id}
-                  href={`#${id}`}
-                  whileTap={{ scale: 0.96 }}
-                  className="
-                    relative
-                    rounded-full
-                    px-4
-                    py-2
-                    text-[13px]
-                    font-medium
-                    text-black/55
-                    transition-colors
-                    duration-300
-                    hover:text-black
-                  "
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="active-nav"
-                      className="
-                        absolute
-                        inset-0
-                        rounded-full
-                        bg-white
-                        shadow-sm
-                      "
-                      transition={{
-                        type: "spring",
-                        stiffness: 350,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-
-                  <span
-                    className={`
-                      relative
-                      z-10
-                      transition-colors
-                      duration-300
-                      ${active
-                        ? "font-semibold text-black"
-                        : ""
-                      }
-                    `}
+                <li key={id}>
+                  <a
+                    href={href(id)}
+                    aria-current={active ? "true" : undefined}
+                    className={`relative block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-medium transition-colors duration-300 xl:px-4 ${
+                      active ? "text-fg" : "text-soft hover:text-fg"
+                    }`}
                   >
-                    {label}
-                  </span>
-                </motion.a>
+                    {active && (
+                      <motion.span
+                        layoutId="active-nav"
+                        className="absolute inset-0 rounded-full bg-ink/10"
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative">{t.nav.links[id]}</span>
+                  </a>
+                </li>
               );
             })}
+          </ul>
+
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            <LanguageSwitcher locale={locale} internalPath={internalPath} label={t.language.label} />
+            <ThemeToggle t={t.theme} />
+
+            {/* CTA — DESKTOP */}
+            <a
+              href={href("contact")}
+              className="group hidden items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-[13px] font-semibold text-canvas transition-all duration-300 hover:shadow-[0_8px_30px_rgba(139,140,255,0.4)] sm:flex lg:hidden xl:flex"
+            >
+              {t.common.freeQuote}
+              <ArrowRight size={15} strokeWidth={2.2} className="transition-transform group-hover:translate-x-0.5" />
+            </a>
+
+            {/* PRZYCISK MENU — MOBILE */}
+            <button
+              type="button"
+              onClick={() => setOpen((previous) => !previous)}
+              aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-line-strong bg-ink/5 text-fg lg:hidden"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={open ? "close" : "menu"}
+                  initial={{ rotate: open ? -90 : 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: open ? 90 : -90, opacity: 0 }}
+                >
+                  {open ? <X size={19} /> : <Menu size={19} />}
+                </motion.span>
+              </AnimatePresence>
+            </button>
           </div>
+        </nav>
 
-          {/* ================================================== */}
-          {/* DESKTOP CTA */}
-          {/* ================================================== */}
-
-          <motion.a
-            href="#contact"
-            whileHover={{
-              scale: 1.025,
-            }}
-            whileTap={{
-              scale: 0.97,
-            }}
-            className="
-              relative
-              z-10
-              hidden
-              items-center
-              gap-2
-              rounded-full
-              bg-black
-              px-5
-              py-2.5
-              text-xs
-              font-semibold
-              text-white
-              shadow-lg
-              shadow-black/10
-              transition-all
-              duration-300
-              hover:bg-[#5b5cf0]
-              hover:shadow-[#5b5cf0]/20
-              md:flex
-            "
-          >
-            Umów konsultację
-
-            <ArrowRight
-              size={15}
-              strokeWidth={2.2}
-            />
-          </motion.a>
-
-          {/* ================================================== */}
-          {/* MOBILE MENU BUTTON */}
-          {/* ================================================== */}
-
-          <motion.button
-            type="button"
-            onClick={() => setOpen((prev) => !prev)}
-            whileTap={{
-              scale: 0.9,
-            }}
-            aria-label={
-              open
-                ? "Zamknij menu"
-                : "Otwórz menu"
-            }
-            aria-expanded={open}
-            className="
-              relative
-              z-10
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-black/[0.07]
-              bg-white/70
-              text-black
-              shadow-sm
-              transition-colors
-              hover:bg-white
-              md:hidden
-            "
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {open ? (
-                <motion.div
-                  key="close"
-                  initial={{
-                    rotate: -90,
-                    opacity: 0,
-                  }}
-                  animate={{
-                    rotate: 0,
-                    opacity: 1,
-                  }}
-                  exit={{
-                    rotate: 90,
-                    opacity: 0,
-                  }}
-                >
-                  <X size={19} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{
-                    rotate: 90,
-                    opacity: 0,
-                  }}
-                  animate={{
-                    rotate: 0,
-                    opacity: 1,
-                  }}
-                  exit={{
-                    rotate: -90,
-                    opacity: 0,
-                  }}
-                >
-                  <Menu size={19} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
-        </motion.nav>
-
-        {/* ================================================== */}
-        {/* MOBILE MENU */}
-        {/* ================================================== */}
-
+        {/* MENU — MOBILE */}
         <AnimatePresence>
           {open && (
             <>
-              {/* BACKDROP */}
-
               <motion.button
                 type="button"
-                aria-label="Zamknij menu"
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                className="
-                  fixed
-                  inset-0
-                  -z-10
-                  h-dvh
-                  w-full
-                  cursor-default
-                  bg-black/5
-                  backdrop-blur-[2px]
-                  md:hidden
-                "
+                aria-label={t.nav.closeMenu}
+                tabIndex={-1}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 -z-10 h-dvh w-full cursor-default bg-black/60 backdrop-blur-sm lg:hidden"
                 onClick={closeMenu}
               />
 
-              {/* PANEL */}
-
               <motion.div
-                initial={{
-                  opacity: 0,
-                  y: -12,
-                  scale: 0.98,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: -12,
-                  scale: 0.98,
-                }}
-                transition={{
-                  duration: 0.22,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="
-                  absolute
-                  left-0
-                  right-0
-                  top-[calc(100%+10px)]
-                  overflow-hidden
-                  rounded-[26px]
-                  border
-                  border-black/[0.07]
-                  bg-white/90
-                  p-2
-                  shadow-[0_25px_80px_rgba(0,0,0,0.14)]
-                  backdrop-blur-2xl
-                  md:hidden
-                "
+                id="mobile-menu"
+                initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-x-0 top-[calc(100%+10px)] overflow-hidden rounded-3xl border border-line-strong bg-panel/95 p-2 shadow-float backdrop-blur-2xl lg:hidden"
               >
-                <div className="rounded-[20px] bg-black/2.5 p-2">
-                  {links.map(([label, id], index) => {
-                    const active = activeSection === id;
-
-                    return (
-                      <motion.a
-                        key={id}
-                        href={`#${id}`}
+                <ul className="p-1">
+                  {navSections.map((id, index) => (
+                    <motion.li
+                      key={id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.035 }}
+                    >
+                      <a
+                        href={href(id)}
                         onClick={closeMenu}
-                        initial={{
-                          opacity: 0,
-                          x: -10,
-                        }}
-                        animate={{
-                          opacity: 1,
-                          x: 0,
-                        }}
-                        transition={{
-                          delay: index * 0.035,
-                        }}
-                        className="
-                          group
-                          flex
-                          items-center
-                          justify-between
-                          rounded-2xl
-                          px-4
-                          py-3.5
-                          text-sm
-                          font-medium
-                          text-black/65
-                          transition-all
-                          duration-200
-                          hover:bg-white
-                          hover:text-black
-                        "
+                        className="group flex items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-medium text-soft transition hover:bg-ink/5 hover:text-fg"
                       >
-                        <span
-                          className={
-                            active
-                              ? "font-semibold text-[#5b5cf0]"
-                              : ""
-                          }
-                        >
-                          {label}
-                        </span>
+                        <span className={activeSection === id ? "text-fg" : ""}>{t.nav.links[id]}</span>
+                        <ChevronRight size={16} className="text-faint transition-transform group-hover:translate-x-1 group-hover:text-brand" />
+                      </a>
+                    </motion.li>
+                  ))}
+                </ul>
 
-                        <ChevronRight
-                          size={16}
-                          className="
-                            text-black/20
-                            transition-transform
-                            duration-200
-                            group-hover:translate-x-1
-                            group-hover:text-[#5b5cf0]
-                          "
-                        />
-                      </motion.a>
-                    );
-                  })}
-                </div>
-
-                {/* CTA */}
-
-                <motion.a
-                  href="#contact"
+                <a
+                  href={href("contact")}
                   onClick={closeMenu}
-                  whileTap={{
-                    scale: 0.98,
-                  }}
-                  className="
-                    mt-2
-                    flex
-                    items-center
-                    justify-between
-                    rounded-[20px]
-                    bg-black
-                    px-5
-                    py-4
-                    text-sm
-                    font-semibold
-                    text-white
-                    shadow-lg
-                    shadow-black/10
-                  "
+                  className="mt-1 flex items-center justify-between rounded-2xl bg-fg px-5 py-4 text-[15px] font-semibold text-canvas"
                 >
-                  <span>Umów konsultację</span>
-
-                  <span
-                    className="
-                      flex
-                      h-8
-                      w-8
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#5b5cf0]
-                    "
-                  >
+                  {t.common.freeQuote}
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-canvas text-fg">
                     <ArrowRight size={16} />
                   </span>
-                </motion.a>
+                </a>
               </motion.div>
             </>
           )}

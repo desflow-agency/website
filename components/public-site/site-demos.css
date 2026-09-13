@@ -1,0 +1,218 @@
+/* ================================================== */
+/* Dema stron w sekcji "Strony WWW"                   */
+/* Każde demo to strona 1280 × 2400 px, skalowana do  */
+/* ramki przeglądarki i "przewijana" animacją CSS.    */
+/* ================================================== */
+
+.demo-page {
+  width: 1280px;
+  animation: demo-scroll 18s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+.demo-screen {
+  position: relative;
+  height: 800px;
+  overflow: hidden;
+}
+
+@keyframes demo-scroll {
+  0%,
+  16% {
+    transform: translateY(0);
+  }
+  30%,
+  48% {
+    transform: translateY(-800px);
+  }
+  62%,
+  82% {
+    transform: translateY(-1600px);
+  }
+  95%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes demo-float {
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes demo-bar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes demo-toast {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  14%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+  78%,
+  100% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+}
+
+@keyframes demo-shine {
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  45%,
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
+@keyframes demo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes demo-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes demo-kenburns {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.12) translate(-2%, 1%);
+  }
+}
+
+@keyframes demo-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 122 61 / 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 26px rgb(255 122 61 / 0);
+  }
+}
+
+@keyframes demo-rise {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  22%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes demo-cursor {
+  0%,
+  100% {
+    transform: translate(760px, 430px);
+  }
+  25% {
+    transform: translate(980px, 250px);
+  }
+  50% {
+    transform: translate(420px, 560px);
+  }
+  75% {
+    transform: translate(240px, 300px);
+  }
+}
+
+@keyframes demo-underline {
+  0%,
+  20% {
+    transform: scaleX(0);
+  }
+  45%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes demo-select {
+  0%,
+  24% {
+    background: #ff7a3d;
+    color: #120c08;
+  }
+  25%,
+  100% {
+    background: transparent;
+    color: #f3e6d3;
+  }
+}
+
+@keyframes demo-tile {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: saturate(0.85);
+  }
+  12% {
+    transform: scale(1.04);
+    filter: saturate(1.2);
+  }
+  24% {
+    transform: scale(1);
+    filter: saturate(0.85);
+  }
+}
+
+@keyframes demo-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Długi zrzut całej strony "przewijany" w ramce (media.kind === "scroll"). */
+.demo-scroll-image {
+  object-fit: cover;
+  object-position: 50% 0%;
+  animation: demo-scroll-image 14s ease-in-out infinite alternate;
+}
+
+@keyframes demo-scroll-image {
+  0%,
+  10% {
+    object-position: 50% 0%;
+  }
+  90%,
+  100% {
+    object-position: 50% 100%;
+  }
+}
+
+@keyframes demo-type {
+  0%,
+  8% {
+    clip-path: inset(0 100% 0 0);
+  }
+  30%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
