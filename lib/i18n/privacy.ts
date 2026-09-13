@@ -23,10 +23,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
 
   if (locale === "en") {
     const company = field(legal.companyName, "FILL IN: company name");
-    const address = field(legal.address, "FILL IN: registered address");
-    const taxId = field(legal.taxId, "FILL IN: tax ID (NIP)");
-    const hosting = field(legal.hosting, "FILL IN: hosting provider");
-    const database = field(legal.database, "FILL IN: database provider");
 
     return {
       title: "Privacy policy",
@@ -37,7 +33,7 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
           id: "controller",
           title: "1. Data controller",
           body: [
-            `The controller of your personal data is ${company}, ${address}, tax ID: ${taxId} (hereinafter “desflow”, “we”).`,
+            `The controller of your personal data is ${company} (hereinafter “desflow”, “we”).`,
             `For any questions about your data, contact us at ${email}.`,
           ],
         },
@@ -81,8 +77,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
             "We do not sell your data. We share it only with providers who help us run the website, under data processing agreements:",
             {
               list: [
-                `website hosting: ${hosting};`,
-                `database where form messages are stored: ${database};`,
                 "Discord Inc. — form notifications are delivered to our team's private channel via a Discord webhook;",
                 "Google Ireland Limited / Google LLC — Google Analytics traffic statistics (only with your consent);",
                 "our team members who handle enquiries.",
@@ -151,10 +145,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
 
   if (locale === "de") {
     const company = field(legal.companyName, "AUSFÜLLEN: Firmenname");
-    const address = field(legal.address, "AUSFÜLLEN: Anschrift");
-    const taxId = field(legal.taxId, "AUSFÜLLEN: Steuernummer (NIP)");
-    const hosting = field(legal.hosting, "AUSFÜLLEN: Hosting-Anbieter");
-    const database = field(legal.database, "AUSFÜLLEN: Datenbank-Anbieter");
 
     return {
       title: "Datenschutzerklärung",
@@ -165,7 +155,7 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
           id: "controller",
           title: "1. Verantwortlicher",
           body: [
-            `Verantwortlich für die Verarbeitung Ihrer Daten ist ${company}, ${address}, Steuernummer: ${taxId} (nachfolgend „desflow“, „wir“).`,
+            `Verantwortlich für die Verarbeitung Ihrer Daten ist ${company} (nachfolgend „desflow“, „wir“).`,
             `Bei Fragen zu Ihren Daten erreichen Sie uns unter ${email}.`,
           ],
         },
@@ -209,8 +199,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
             "Wir verkaufen Ihre Daten nicht. Wir geben sie nur an Dienstleister weiter, die uns beim Betrieb der Webseite unterstützen — auf Grundlage von Auftragsverarbeitungsverträgen:",
             {
               list: [
-                `Hosting der Webseite: ${hosting};`,
-                `Datenbank, in der Formularnachrichten gespeichert werden: ${database};`,
                 "Discord Inc. — Benachrichtigungen über neue Anfragen gelangen per Discord-Webhook in einen privaten Kanal unseres Teams;",
                 "Google Ireland Limited / Google LLC — Besucherstatistiken mit Google Analytics (nur mit Ihrer Einwilligung);",
                 "unsere Teammitglieder, die Anfragen bearbeiten.",
@@ -278,10 +266,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
   }
 
   const company = field(legal.companyName, "UZUPEŁNIJ: nazwa firmy");
-  const address = field(legal.address, "UZUPEŁNIJ: adres siedziby");
-  const taxId = field(legal.taxId, "UZUPEŁNIJ: NIP");
-  const hosting = field(legal.hosting, "UZUPEŁNIJ: dostawca hostingu");
-  const database = field(legal.database, "UZUPEŁNIJ: dostawca bazy danych");
 
   return {
     title: "Polityka prywatności",
@@ -292,7 +276,7 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
         id: "administrator",
         title: "1. Administrator danych",
         body: [
-          `Administratorem Twoich danych osobowych jest ${company}, ${address}, NIP: ${taxId} (dalej „desflow”, „my”).`,
+          `Administratorem Twoich danych osobowych jest ${company} (dalej „desflow”, „my”).`,
           `We wszystkich sprawach dotyczących danych możesz napisać do nas na ${email}.`,
         ],
       },
@@ -336,8 +320,6 @@ export function getPrivacyPolicy(locale: Locale): { title: string; intro: string
           "Nie sprzedajemy Twoich danych. Przekazujemy je wyłącznie dostawcom, którzy pomagają nam prowadzić stronę, na podstawie umów powierzenia przetwarzania:",
           {
             list: [
-              `hosting strony: ${hosting};`,
-              `baza danych, w której zapisywane są wiadomości z formularza: ${database};`,
               "Discord Inc. — powiadomienia o nowych zapytaniach trafiają przez webhook Discorda na prywatny kanał naszego zespołu;",
               "Google Ireland Limited / Google LLC — statystyki odwiedzin w Google Analytics (tylko za Twoją zgodą);",
               "członkowie naszego zespołu obsługujący zapytania.",

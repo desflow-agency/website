@@ -11,11 +11,7 @@ export const siteConfig = {
    * Puste pola są widoczne na stronie polityki jako żółte znaczniki [UZUPEŁNIJ].
    */
   legal: {
-    companyName: "", // pełna nazwa firmy / imię i nazwisko przedsiębiorcy, np. "desflow Jan Kowalski"
-    address: "", // adres siedziby, np. "ul. Przykładowa 1, 70-001 Szczecin"
-    taxId: "", // NIP
-    hosting: "", // dostawca hostingu strony, np. "Vercel Inc."
-    database: "", // dostawca bazy danych, np. "Neon Inc." albo ten sam co hosting
+    companyName: "desflow.pl", // pełna nazwa firmy / imię i nazwisko przedsiębiorcy, np. "desflow Jan Kowalski"
   },
   policyUpdated: "2026-09-13",
   socials: {
