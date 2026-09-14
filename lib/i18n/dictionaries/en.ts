@@ -163,6 +163,12 @@ export const en: Dictionary = {
       ["SEO from day one", "Metadata, structured data, sitemap and a proper heading structure."],
     ],
     items: {
+      hlservice: {
+        type: "Business website — heavy lift services",
+        description:
+          "A new website for a Szczecin company that replaced its outdated one: a bold hero, key figures, a gallery of 90+ projects and three language versions for clients across Europe.",
+        tags: ["PL / EN / DE", "Project gallery", "Before & after"],
+      },
       hypecube: {
         type: "Minecraft server website",
         description:
@@ -187,14 +193,19 @@ export const en: Dictionary = {
   portfolio: {
     kicker: "Selected work",
     title: "Work that *works*.",
-    description: "Graphics, reels and social media content we've created for our clients.",
+    description: "Graphics, reels, social media content and websites we've created for our clients.",
     filterAria: "Filter projects",
     all: "All",
     categories: {
       grafika: "Graphic design",
       wideo: "Video editing",
       social: "Social media",
+      www: "Websites",
     },
+    before: "Before",
+    after: "After",
+    compareHint: "Drag to compare",
+    compareAria: "Website comparison before and after the redesign",
     altSuffix: "project by desflow",
     openAria: "Open preview:",
     cursor: "View",
@@ -218,6 +229,9 @@ export const en: Dictionary = {
       "We don't believe in empty promises. The people we've worked with say it best.",
     ratingAria: "Rated 5 out of 5",
     items: [
+      // HypeCube review is a DRAFT — to be confirmed by the client before publishing.
+      ["Heavy Lift Service · website", "A great modernisation of our website. It looks modern, works well on phones, and now it also comes in English and German. The whole collaboration was smooth and hassle-free."],
+      ["Minecraft server · website", "The website turned out really cool — it captures the vibe of the server, and players instantly see how many of us there are and how to join. Fast and hassle-free."],
       ["CEO, mcgramy.pl", "The team professionally created my entire brand identity and manages my social media profiles."],
       ["CEO, Taniej.", "The whole visual identity was done for me really fast and exactly the way I wanted."],
       ["YouTuber · DeeJayPallaside", "The team managed my Discord community for a long time and did a perfect job."],

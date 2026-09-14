@@ -167,6 +167,12 @@ export const pl = {
       ["SEO od startu", "Metadane, dane strukturalne, sitemap i poprawne nagłówki."],
     ],
     items: {
+      hlservice: {
+        type: "Strona firmowa — przeładunki ciężkie",
+        description:
+          "Nowa strona firmy ze Szczecina, która zastąpiła przestarzałą witrynę: mocny hero, kluczowe liczby, galeria 90+ realizacji i trzy wersje językowe dla klientów z Europy.",
+        tags: ["PL / EN / DE", "Galeria realizacji", "Przed i po"],
+      },
       hypecube: {
         type: "Strona serwera Minecraft",
         description:
@@ -191,14 +197,19 @@ export const pl = {
   portfolio: {
     kicker: "Wybrane realizacje",
     title: "Praca, która *pracuje*.",
-    description: "Grafiki, rolki i treści social media, które przygotowaliśmy dla naszych klientów.",
+    description: "Grafiki, rolki, treści social media i strony, które przygotowaliśmy dla naszych klientów.",
     filterAria: "Filtruj realizacje",
     all: "Wszystkie",
     categories: {
       grafika: "Grafika",
       wideo: "Montaż wideo",
       social: "Social media",
+      www: "Strony WWW",
     },
+    before: "Przed",
+    after: "Po",
+    compareHint: "Przeciągnij, żeby porównać",
+    compareAria: "Porównanie strony przed i po zmianie",
     altSuffix: "realizacja desflow",
     openAria: "Otwórz podgląd:",
     cursor: "Zobacz",
@@ -222,6 +233,9 @@ export const pl = {
       "Nie wierzymy w obietnice bez pokrycia. Najlepiej o naszej pracy mówią ludzie, z którymi pracowaliśmy.",
     ratingAria: "Ocena 5 na 5",
     items: [
+      // Opinia HypeCube to PROJEKT — do potwierdzenia przez klienta przed publikacją.
+      ["Heavy Lift Service · strona internetowa", "Świetna modernizacja naszej strony. Wygląda nowocześnie, dobrze działa na telefonie, a do tego doszły wersje po angielsku i niemiecku. Współpraca przebiegła sprawnie i bez problemów."],
+      ["Serwer Minecraft · strona internetowa", "Strona wyszła naprawdę spoko — oddaje klimat serwera, a gracze od razu widzą, ilu nas jest i jak dołączyć. Wszystko szybko i bez zbędnego kombinowania."],
       ["CEO, mcgramy.pl", "Zespół wykonał dla mnie profesjonalnie cały branding mojej marki oraz zarządza moimi profilami social media."],
       ["CEO, Taniej.", "Cała szata graficzna została wykonana dla mnie ekspresowo oraz dokładnie tak jak chciałem."],
       ["YouTuber · DeeJayPallaside", "Zespół zarządzał moją społecznością Discord przez dłuższy czas, sprawował się przy tym perfekcyjnie."],

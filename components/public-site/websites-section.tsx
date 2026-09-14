@@ -36,6 +36,7 @@ import { useInView, usePrefersReducedMotion } from "./use-in-view";
  * url      → link "Odwiedź stronę".
  * embed    → true tylko, gdy strona pozwala na osadzenie (brak X-Frame-Options: DENY/SAMEORIGIN).
  *            Wtedy pełny podgląd ładuje stronę na żywo z przełącznikiem komputer / telefon.
+ * hideLink → bez linków "Odwiedź" / "Otwórz stronę" (np. strona jeszcze na adresie testowym).
  * duration → jak długo (ms) projekt jest pokazywany przed przejściem do kolejnego.
  */
 
@@ -53,12 +54,26 @@ type Showcase = {
   address: string;
   url?: string;
   embed?: boolean;
+  hideLink?: boolean;
   duration?: number;
   concept?: boolean;
   media: ShowcaseMedia;
 };
 
 const showcases: Showcase[] = [
+  {
+    id: "dawar",
+    title: "Dawar Żary",
+    address: "dawar-zary.pl",
+    url: "https://dawar-zary.pl",
+    duration: 20000,
+    media: {
+      kind: "video",
+      webm: "/websites/dawar-zary-pl.webm",
+      mp4: "/websites/dawar-zary-pl.mp4",
+      poster: "/websites/dawar-zary-pl.webp",
+    },
+  },
   {
     id: "hypecube",
     title: "HypeCube",
@@ -87,16 +102,18 @@ const showcases: Showcase[] = [
     },
   },
   {
-    id: "dawar",
-    title: "Dawar Żary",
-    address: "dawar-zary.pl",
-    url: "https://dawar-zary.pl",
+    id: "hlservice",
+    title: "Heavy Lift Service",
+    address: "hlservice.vercel.app",
+    url: "https://hlservice.vercel.app",
+    embed: true,
+    hideLink: true,
     duration: 20000,
     media: {
       kind: "video",
-      webm: "/websites/dawar-zary-pl.webm",
-      mp4: "/websites/dawar-zary-pl.mp4",
-      poster: "/websites/dawar-zary-pl.webp",
+      webm: "/websites/hlservice.webm",
+      mp4: "/websites/hlservice.mp4",
+      poster: "/websites/hlservice.webp",
     },
   },
 ];
@@ -269,7 +286,7 @@ export function WebsitesSection({ t }: { t: WebsitesText }) {
               </div>
 
               <div className="flex flex-wrap items-center gap-5">
-                {active.url && (
+                {active.url && !active.hideLink && (
                   <a
                     href={active.url}
                     target="_blank"
@@ -434,7 +451,7 @@ function PreviewModal({ item, t, onClose }: { item: Showcase; t: WebsitesText; o
               ))}
             </div>
           )}
-          {item.url && (
+          {item.url && !item.hideLink && (
             <a
               href={item.url}
               target="_blank"

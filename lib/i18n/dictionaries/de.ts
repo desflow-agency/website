@@ -163,6 +163,12 @@ export const de: Dictionary = {
       ["SEO ab Tag eins", "Metadaten, strukturierte Daten, Sitemap und saubere Überschriften."],
     ],
     items: {
+      hlservice: {
+        type: "Firmenwebseite — Schwerlastumschlag",
+        description:
+          "Neue Webseite für ein Unternehmen aus Stettin, die den veralteten Auftritt ersetzt: starker Hero-Bereich, wichtige Kennzahlen, Galerie mit über 90 Projekten und drei Sprachversionen für Kunden in ganz Europa.",
+        tags: ["PL / EN / DE", "Projektgalerie", "Vorher / Nachher"],
+      },
       hypecube: {
         type: "Webseite eines Minecraft-Servers",
         description:
@@ -187,14 +193,19 @@ export const de: Dictionary = {
   portfolio: {
     kicker: "Ausgewählte Arbeiten",
     title: "Arbeit, die *wirkt*.",
-    description: "Grafiken, Reels und Social-Media-Inhalte, die wir für unsere Kunden erstellt haben.",
+    description: "Grafiken, Reels, Social-Media-Inhalte und Webseiten, die wir für unsere Kunden erstellt haben.",
     filterAria: "Projekte filtern",
     all: "Alle",
     categories: {
       grafika: "Grafikdesign",
       wideo: "Videoschnitt",
       social: "Social Media",
+      www: "Webseiten",
     },
+    before: "Vorher",
+    after: "Nachher",
+    compareHint: "Ziehen zum Vergleichen",
+    compareAria: "Vergleich der Webseite vor und nach dem Redesign",
     altSuffix: "Projekt von desflow",
     openAria: "Vorschau öffnen:",
     cursor: "Ansehen",
@@ -218,6 +229,9 @@ export const de: Dictionary = {
       "Wir glauben nicht an leere Versprechen. Am besten sprechen die Menschen über uns, mit denen wir gearbeitet haben.",
     ratingAria: "Bewertung 5 von 5",
     items: [
+      // HypeCube-Bewertung ist ein ENTWURF — vor der Veröffentlichung vom Kunden bestätigen lassen.
+      ["Heavy Lift Service · Webseite", "Eine gelungene Modernisierung unserer Webseite. Sie wirkt modern, funktioniert gut auf dem Handy und ist jetzt auch auf Englisch und Deutsch verfügbar. Die Zusammenarbeit lief reibungslos."],
+      ["Minecraft-Server · Webseite", "Die Webseite ist richtig gut geworden — sie trifft die Atmosphäre des Servers, und Spieler sehen sofort, wie viele wir sind und wie man beitritt. Schnell und unkompliziert."],
       ["CEO, mcgramy.pl", "Das Team hat das komplette Branding meiner Marke professionell umgesetzt und betreut meine Social-Media-Profile."],
       ["CEO, Taniej.", "Das gesamte Design wurde für mich blitzschnell umgesetzt — genau so, wie ich es wollte."],
       ["YouTuber · DeeJayPallaside", "Das Team hat meine Discord-Community lange betreut und dabei perfekte Arbeit geleistet."],

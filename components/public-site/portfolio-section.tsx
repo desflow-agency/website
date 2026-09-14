@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
 import { isVideo, portfolioFilters as filters, type Project, projects } from "@/lib/portfolio";
 
+import { CompareSlider, CompareThumb } from "./before-after";
 import { SectionHeader } from "./reveal";
 import { Accent } from "./rich-text";
 import { useInView } from "./use-in-view";
@@ -107,9 +108,11 @@ export function PortfolioSection({ t }: { t: PortfolioText }) {
                     </span>
                   )}
 
-                  <span className="pointer-events-none absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md md:hidden">
-                    <ArrowUpRight size={16} />
-                  </span>
+                  {!project.compare && (
+                    <span className="pointer-events-none absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md md:hidden">
+                      <ArrowUpRight size={16} />
+                    </span>
+                  )}
                 </button>
               </motion.li>
             ))}
@@ -156,6 +159,18 @@ function PortfolioMedia({ project, t }: { project: Project; t: PortfolioText }) 
       video.pause();
     }
   }, [inView, ref]);
+
+  if (project.compare) {
+    return (
+      <CompareThumb
+        {...project.compare}
+        width={project.width}
+        height={project.height}
+        labels={{ before: t.before, after: t.after }}
+        alt={altText(project, t)}
+      />
+    );
+  }
 
   if (isVideo(project.media)) {
     return (
@@ -208,6 +223,8 @@ function Lightbox({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
+      // Strzałki w suwaku przed / po przesuwają suwak, a nie zmieniają projektu.
+      if (event.target instanceof HTMLInputElement) return;
       if (event.key === "ArrowRight") go(1);
       if (event.key === "ArrowLeft") go(-1);
     };
@@ -264,7 +281,17 @@ function Lightbox({
             className="flex h-full max-h-full w-full items-center justify-center"
             onClick={(event) => event.stopPropagation()}
           >
-            {isVideo(project.media) ? (
+            {project.compare ? (
+              <CompareSlider
+                {...project.compare}
+                width={project.width}
+                height={project.height}
+                labels={{ before: t.before, after: t.after }}
+                alt={altText(project, t)}
+                hint={t.compareHint}
+                ariaLabel={t.compareAria}
+              />
+            ) : isVideo(project.media) ? (
               <video
                 src={project.media}
                 controls

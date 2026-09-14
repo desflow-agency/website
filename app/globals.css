@@ -572,6 +572,29 @@ html[data-theme="light"] .theme-icon__rays {
   }
 }
 
+/* Portfolio: porównanie przed / po — linia podziału sama przesuwa się tam i z powrotem. */
+.compare-thumb__before {
+  clip-path: inset(0 50% 0 0);
+  animation: compare-before 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.compare-thumb__line {
+  left: 50%;
+  animation: compare-line 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes compare-before {
+  0%, 100% { clip-path: inset(0 50% 0 0); }
+  35% { clip-path: inset(0 12% 0 0); }
+  70% { clip-path: inset(0 88% 0 0); }
+}
+
+@keyframes compare-line {
+  0%, 100% { left: 50%; }
+  35% { left: 88%; }
+  70% { left: 12%; }
+}
+
 /* Animacje dema stron są pauzowane, gdy element jest poza ekranem. */
 [data-paused="true"] *,
 [data-paused="true"] *::before,

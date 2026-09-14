@@ -6,7 +6,9 @@ import { Reveal, SectionHeader } from "./reveal";
 import { Accent } from "./rich-text";
 import { SpotlightCard } from "./spotlight-card";
 
-const authors = ["Jakub B.", "Michał Sz.", "Daniel Pawlak"];
+// Kolejność jak w słownikach (testimonials.items). Pierwsze dwie opinie są wyróżnione (szersze karty).
+const authors = ["Przemysław R.", "HypeCube", "Jakub B.", "Michał Sz.", "Daniel Pawlak"];
+const FEATURED = 2;
 
 export function TestimonialsSection({ t }: { t: Dictionary["testimonials"] }) {
   return (
@@ -14,12 +16,12 @@ export function TestimonialsSection({ t }: { t: Dictionary["testimonials"] }) {
       <div className="container-site">
         <SectionHeader id="reviews-title" kicker={t.kicker} title={<Accent text={t.title} />} description={t.description} />
 
-        <div className="mt-14 grid gap-4 md:grid-cols-3">
+        <div className="mt-14 grid gap-4 md:grid-cols-6">
           {authors.map((name, index) => {
             const [role, text] = t.items[index] ?? ["", ""];
 
             return (
-              <Reveal key={name} delay={index * 0.08} className="h-full">
+              <Reveal key={name} delay={index * 0.08} className={index < FEATURED ? "h-full md:col-span-3" : "h-full md:col-span-2"}>
                 <SpotlightCard className="group flex h-full flex-col p-7 transition-colors duration-500 hover:border-line-strong">
                   <figure className="relative flex h-full flex-col">
                     <div className="flex items-center justify-between">
@@ -31,7 +33,9 @@ export function TestimonialsSection({ t }: { t: Dictionary["testimonials"] }) {
                       <Quote size={22} className="text-ink/10 transition-colors group-hover:text-brand/50" aria-hidden="true" />
                     </div>
 
-                    <blockquote className="mt-8 flex-1 text-[17px] leading-7 tracking-[-0.01em] text-fg/90">„{text}”</blockquote>
+                    <blockquote
+                      className={`mt-8 flex-1 leading-7 tracking-[-0.01em] text-fg/90 ${index < FEATURED ? "text-lg md:text-[19px] md:leading-8" : "text-[17px]"}`}
+                    >„{text}”</blockquote>
 
                     <figcaption className="mt-8 flex items-center gap-3 border-t border-line pt-6">
                       <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-linear-to-br from-brand-strong to-mint/70 text-xs font-bold text-white">

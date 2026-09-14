@@ -1,6 +1,6 @@
 // Realizacje w portfolio — dane wspólne dla sekcji na stronie i sitemapy (obrazki dla Google Grafika).
 
-export const portfolioFilters = ["all", "grafika", "wideo", "social"] as const;
+export const portfolioFilters = ["all", "www", "grafika", "wideo", "social"] as const;
 
 export type PortfolioCategory = Exclude<(typeof portfolioFilters)[number], "all">;
 
@@ -10,9 +10,27 @@ export type Project = {
   media: string;
   width: number;
   height: number;
+  // Porównanie przed / po (np. odświeżona strona). media = zrzut "po".
+  compare?: { before: string; after: string };
 };
 
 export const projects: Project[] = [
+  {
+    title: "Heavy Lift Service",
+    category: "www",
+    media: "/portfolio/hlservice-after.webp",
+    width: 1600,
+    height: 1000,
+    compare: { before: "/portfolio/hlservice-before.webp", after: "/portfolio/hlservice-after.webp" },
+  },
+  {
+    title: "Dawar Żary",
+    category: "www",
+    media: "/portfolio/dawar-after.webp",
+    width: 1600,
+    height: 1000,
+    compare: { before: "/portfolio/dawar-before.webp", after: "/portfolio/dawar-after.webp" },
+  },
   { title: "Surova", category: "grafika", media: "/surova.png", width: 1024, height: 1024 },
   { title: "AdviceBot | TikTok #1", category: "wideo", media: "/advice_tt_1.mp4", width: 9, height: 16 },
   { title: "mcgramy.pl | Banner #1", category: "grafika", media: "/mcg.png", width: 595, height: 842 },

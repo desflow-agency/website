@@ -8,8 +8,11 @@ import { contentUpdated, siteConfig } from "@/lib/site";
 const absolute = (path: string) => `${siteConfig.url}${path === "/" ? "" : path}`;
 
 // Obrazki pokazywane na danej stronie — Google może je zaindeksować w Grafice.
-const portfolioImages = projects.filter((project) => !isVideo(project.media)).map((project) => absolute(project.media));
-const websitePosters = ["www-hypecube-net", "advicebot-info", "dawar-zary-pl"].map((name) =>
+const portfolioImages = projects
+  .filter((project) => !isVideo(project.media))
+  .flatMap((project) => (project.compare ? [project.compare.after, project.compare.before] : [project.media]))
+  .map(absolute);
+const websitePosters = ["hlservice", "www-hypecube-net", "advicebot-info", "dawar-zary-pl"].map((name) =>
   absolute(`/websites/${name}.webp`)
 );
 
