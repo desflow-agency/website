@@ -347,6 +347,70 @@ export const de: Dictionary = {
     reject: "Ablehnen",
   },
 
+  pages: {
+    home: "Startseite",
+    breadcrumbAria: "Brotkrumennavigation",
+    related: "Siehe auch",
+    items: {
+      offer: {
+        label: "Leistungen",
+        metaTitle: "Leistungen & Preise — Design, Video, Social Media, Webseiten",
+        metaDescription:
+          "Leistungen von desflow: Grafikdesign, Schnitt von Reels und Werbevideos, Social-Media-Betreuung und animierte Webseiten. Transparente Preise und kostenloses Angebot in 24 Stunden.",
+        title: "Leistungen: Design, Video, Social Media und *Webseiten*",
+        lead: "Transparente Preise, schnelle Umsetzung und ein Team von der Idee bis zur Veröffentlichung. Wählen Sie eine Leistung oder beschreiben Sie Ihr Projekt — Ihr Angebot erhalten Sie innerhalb von 24 Stunden.",
+      },
+      websites: {
+        label: "Webseiten",
+        metaTitle: "Webseiten mit Animationen für Unternehmen",
+        metaDescription:
+          "Wir gestalten und entwickeln schnelle, moderne Webseiten mit Animationen — responsiv und SEO-optimiert. Sehen Sie unsere Projekte in Bewegung.",
+        title: "Webseiten, die *Eindruck machen*",
+        lead: "Schnell, responsiv und bis ins Detail durchdacht. Sehen Sie unsere Projekte in Bewegung — genau so, wie Besucher sie erleben.",
+      },
+      portfolio: {
+        label: "Portfolio",
+        metaTitle: "Portfolio — Grafik- und Videoprojekte",
+        metaDescription:
+          "Portfolio von desflow: YouTube-Thumbnails, Banner, Corporate Designs, Social-Media-Grafiken und Videoschnitt für Creator und Unternehmen.",
+        title: "Portfolio: unsere *Arbeiten*",
+        lead: "Thumbnails, Banner, Corporate Designs und Social-Media-Inhalte, die wir für Creator und Marken erstellt haben.",
+      },
+      reviews: {
+        label: "Referenzen",
+        metaTitle: "Kundenbewertungen",
+        metaDescription:
+          "Was sagen unsere Kunden? Bewertungen von Creatorn und Unternehmen, für die desflow Grafiken, Videos und Webseiten umgesetzt hat.",
+        title: "Das sagen *unsere Kunden*",
+        lead: "Creator und Unternehmen über die Zusammenarbeit mit desflow.",
+      },
+      faq: {
+        label: "FAQ",
+        metaTitle: "FAQ — häufige Fragen",
+        metaDescription:
+          "Antworten auf häufige Fragen: Bearbeitungszeiten, Ablauf der Zusammenarbeit und Kosten für Grafikdesign, Videoschnitt und Webseiten.",
+        title: "Häufig gestellte *Fragen*",
+        lead: "Zeitrahmen, Preise, Korrekturen und Ablauf — alle Antworten an einem Ort.",
+      },
+      locations: {
+        label: "Standorte",
+        metaTitle: "Standorte — Szczecin, Zielona Góra, Żary und remote",
+        metaDescription:
+          "desflow ist in Stettin (Szczecin), Grünberg (Zielona Góra) und Sorau (Żary) im Westen Polens ansässig. Vor Ort treffen wir uns dort, remote arbeiten wir mit Kunden in ganz Europa.",
+        title: "Zuhause im Westen Polens, *tätig überall*",
+        lead: "Persönlich treffen wir uns in drei Städten — remote arbeiten wir mit Kunden in Polen, Deutschland und darüber hinaus.",
+      },
+      contact: {
+        label: "Kontakt",
+        metaTitle: "Kontakt — kostenloses Angebot in 24 Stunden",
+        metaDescription:
+          "Schreiben Sie desflow und beschreiben Sie Ihr Projekt — Grafikdesign, Videoschnitt, Social Media oder Webseite. Kostenloses Angebot innerhalb von 24 Stunden.",
+        title: "Kontakt & *kostenloses Angebot*",
+        lead: "Beschreiben Sie Ihr Projekt in wenigen Sätzen. Wir antworten innerhalb von 24 Stunden mit einem Angebot und einem Terminvorschlag.",
+      },
+    },
+  },
+
   notFound: {
     metaTitle: "Seite nicht gefunden",
     kicker: "Fehler 404",

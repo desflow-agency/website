@@ -10,6 +10,7 @@ import { localizePath } from "@/lib/i18n/config";
 import { navSections } from "@/lib/site";
 
 import { LanguageSwitcher } from "./language-switcher";
+import { SectionLink } from "./section-link";
 import { ThemeToggle } from "./theme-toggle";
 
 type NavigationText = Pick<Dictionary, "nav" | "common" | "theme" | "language">;
@@ -30,11 +31,14 @@ export function Navigation({
   const [activeSection, setActiveSection] = useState("");
 
   const home = localizePath(locale, "/");
-  const href = (id: string) => (sectionLinksToHome ? `${home}#${id}` : `#${id}`);
+  // Na stronie głównej linki przewijają do sekcji, na podstronach prowadzą do innych podstron.
+  const onHome = !sectionLinksToHome;
+  const pageSection = internalPath.slice(1);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
+      if (!onHome) return;
 
       let current = "";
       for (const id of navSections) {
@@ -47,7 +51,7 @@ export function Navigation({
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [onHome]);
 
   useEffect(() => {
     if (!open) return;
@@ -94,13 +98,15 @@ export function Navigation({
           {/* LINKI — DESKTOP */}
           <ul className="mx-auto hidden items-center gap-0.5 rounded-full border border-line bg-ink/[0.03] p-1 lg:flex xl:gap-1">
             {navSections.map((id) => {
-              const active = activeSection === id;
+              const active = onHome ? activeSection === id : pageSection === id;
 
               return (
                 <li key={id}>
-                  <a
-                    href={href(id)}
-                    aria-current={active ? "true" : undefined}
+                  <SectionLink
+                    locale={locale}
+                    section={id}
+                    scroll={onHome}
+                    aria-current={active ? (onHome ? "true" : "page") : undefined}
                     className={`relative block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-medium transition-colors duration-300 xl:px-4 ${
                       active ? "text-fg" : "text-soft hover:text-fg"
                     }`}
@@ -113,7 +119,7 @@ export function Navigation({
                       />
                     )}
                     <span className="relative">{t.nav.links[id]}</span>
-                  </a>
+                  </SectionLink>
                 </li>
               );
             })}
@@ -124,13 +130,15 @@ export function Navigation({
             <ThemeToggle t={t.theme} />
 
             {/* CTA — DESKTOP */}
-            <a
-              href={href("contact")}
+            <SectionLink
+              locale={locale}
+              section="contact"
+              scroll
               className="group hidden items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-[13px] font-semibold text-canvas transition-all duration-300 hover:shadow-[0_8px_30px_rgba(139,140,255,0.4)] sm:flex lg:hidden xl:flex"
             >
               {t.common.freeQuote}
               <ArrowRight size={15} strokeWidth={2.2} className="transition-transform group-hover:translate-x-0.5" />
-            </a>
+            </SectionLink>
 
             {/* PRZYCISK MENU — MOBILE */}
             <button
@@ -186,20 +194,24 @@ export function Navigation({
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.035 }}
                     >
-                      <a
-                        href={href(id)}
+                      <SectionLink
+                        locale={locale}
+                        section={id}
+                        scroll={onHome}
                         onClick={closeMenu}
                         className="group flex items-center justify-between rounded-2xl px-4 py-3.5 text-[15px] font-medium text-soft transition hover:bg-ink/5 hover:text-fg"
                       >
-                        <span className={activeSection === id ? "text-fg" : ""}>{t.nav.links[id]}</span>
+                        <span className={(onHome ? activeSection : pageSection) === id ? "text-fg" : ""}>{t.nav.links[id]}</span>
                         <ChevronRight size={16} className="text-faint transition-transform group-hover:translate-x-1 group-hover:text-brand" />
-                      </a>
+                      </SectionLink>
                     </motion.li>
                   ))}
                 </ul>
 
-                <a
-                  href={href("contact")}
+                <SectionLink
+                  locale={locale}
+                  section="contact"
+                  scroll
                   onClick={closeMenu}
                   className="mt-1 flex items-center justify-between rounded-2xl bg-fg px-5 py-4 text-[15px] font-semibold text-canvas"
                 >
@@ -207,7 +219,7 @@ export function Navigation({
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-canvas text-fg">
                     <ArrowRight size={16} />
                   </span>
-                </a>
+                </SectionLink>
               </motion.div>
             </>
           )}

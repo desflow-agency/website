@@ -7,6 +7,7 @@ import { localizePath } from "@/lib/i18n/config";
 import { navSections, siteConfig } from "@/lib/site";
 
 import { CookieSettingsButton } from "./consent-banner";
+import { SectionLink } from "./section-link";
 
 const socials = [
   { label: "YouTube", href: siteConfig.socials.youtube, icon: FaYoutube },
@@ -24,8 +25,6 @@ export function Footer({
   t: Dictionary["footer"];
   nav: Dictionary["nav"]["links"];
 }) {
-  const home = localizePath(locale, "/");
-  const href = (id: string) => (sectionLinksToHome ? `${home}#${id}` : `#${id}`);
 
   return (
     <footer className="relative overflow-hidden border-t border-line bg-canvas">
@@ -44,13 +43,15 @@ export function Footer({
 
             <p className="mt-6 max-w-sm leading-7 text-soft">{t.description}</p>
 
-            <a
-              href={href("contact")}
+            <SectionLink
+              locale={locale}
+              section="contact"
+              scroll
               className="group mt-8 inline-flex items-center gap-2 rounded-full bg-fg px-6 py-3 text-sm font-semibold text-canvas transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_40px_rgba(139,140,255,0.35)]"
             >
               {t.cta}
               <ArrowUpRight size={17} className="transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </a>
+            </SectionLink>
           </div>
 
           <nav aria-label={t.navAria}>
@@ -58,10 +59,15 @@ export function Footer({
             <ul className="mt-6 flex flex-col gap-3.5">
               {navSections.map((id) => (
                 <li key={id}>
-                  <a href={href(id)} className="group flex w-fit items-center gap-2 text-soft transition hover:text-fg">
+                  <SectionLink
+                    locale={locale}
+                    section={id}
+                    scroll={!sectionLinksToHome}
+                    className="group flex w-fit items-center gap-2 text-soft transition hover:text-fg"
+                  >
                     <span className="h-px w-0 bg-brand transition-all duration-300 group-hover:w-4" />
                     {nav[id]}
-                  </a>
+                  </SectionLink>
                 </li>
               ))}
             </ul>

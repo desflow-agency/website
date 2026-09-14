@@ -347,6 +347,70 @@ export const pl = {
     reject: "Odrzuć",
   },
 
+  pages: {
+    home: "Strona główna",
+    breadcrumbAria: "Ścieżka nawigacji",
+    related: "Zobacz też",
+    items: {
+      offer: {
+        label: "Oferta",
+        metaTitle: "Oferta i cennik — grafika, wideo, social media, strony WWW",
+        metaDescription:
+          "Oferta desflow: projekty graficzne od 50 zł, montaż rolek i reklam, prowadzenie social media oraz strony internetowe z animacjami. Sprawdź ceny i zamów darmową wycenę.",
+        title: "Oferta: grafika, wideo, social media i *strony WWW*",
+        lead: "Przejrzyste ceny, szybkie terminy i jeden zespół od pomysłu do publikacji. Wybierz usługę albo opisz projekt — wycenę wyślemy w 24 godziny.",
+      },
+      websites: {
+        label: "Strony WWW",
+        metaTitle: "Strony internetowe dla firm z animacjami",
+        metaDescription:
+          "Projektujemy i budujemy szybkie, nowoczesne strony internetowe z animacjami — responsywne, zoptymalizowane pod SEO. Zobacz nasze realizacje w ruchu.",
+        title: "Strony internetowe, które *robią wrażenie*",
+        lead: "Szybkie, responsywne i dopracowane w detalach. Zobacz realizacje w ruchu — dokładnie tak, jak widzą je odwiedzający.",
+      },
+      portfolio: {
+        label: "Portfolio",
+        metaTitle: "Portfolio — realizacje graficzne i wideo",
+        metaDescription:
+          "Portfolio desflow: miniatury YouTube, banery, identyfikacje wizualne, grafiki do social media i montaże wideo dla twórców i firm.",
+        title: "Portfolio: nasze *realizacje*",
+        lead: "Miniatury, banery, identyfikacje i materiały do social media, które przygotowaliśmy dla twórców i marek.",
+      },
+      reviews: {
+        label: "Opinie",
+        metaTitle: "Opinie klientów",
+        metaDescription:
+          "Co mówią o nas klienci? Opinie twórców i firm, dla których desflow przygotował grafiki, montaże wideo i strony internetowe.",
+        title: "Opinie *naszych klientów*",
+        lead: "Twórcy i firmy, z którymi pracowaliśmy, o współpracy z desflow.",
+      },
+      faq: {
+        label: "FAQ",
+        metaTitle: "FAQ — najczęstsze pytania",
+        metaDescription:
+          "Odpowiedzi na najczęstsze pytania: ile trwa realizacja, jak wygląda współpraca, ile kosztuje grafika, montaż i strona internetowa.",
+        title: "Najczęściej zadawane *pytania*",
+        lead: "Terminy, ceny, poprawki i przebieg współpracy — zebraliśmy odpowiedzi w jednym miejscu.",
+      },
+      locations: {
+        label: "Gdzie działamy",
+        metaTitle: "Gdzie działamy — Szczecin, Zielona Góra, Żary i cała Polska",
+        metaDescription:
+          "Agencja kreatywna desflow stacjonuje w Szczecinie, Zielonej Górze i Żarach. Spotkania na miejscu, a projekty online realizujemy w całej Polsce i za granicą.",
+        title: "Szczecin, Zielona Góra, Żary — *i cała Polska*",
+        lead: "Na miejscu spotkamy się w trzech miastach, a online pracujemy z klientami z całego kraju i z zagranicy.",
+      },
+      contact: {
+        label: "Kontakt",
+        metaTitle: "Kontakt — darmowa wycena w 24h",
+        metaDescription:
+          "Napisz do desflow i opisz swój projekt — grafika, montaż wideo, social media lub strona internetowa. Darmową wycenę wyślemy w ciągu 24 godzin.",
+        title: "Kontakt i *darmowa wycena*",
+        lead: "Opisz projekt w kilku zdaniach. Odpiszemy w ciągu 24 godzin z wyceną i propozycją terminu.",
+      },
+    },
+  },
+
   notFound: {
     metaTitle: "Nie znaleziono strony",
     kicker: "Błąd 404",

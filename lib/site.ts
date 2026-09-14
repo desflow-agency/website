@@ -27,6 +27,14 @@ export const locations = [
   { key: "zary", name: "Żary" },
 ] as const;
 
-// Kotwice sekcji w menu (etykiety są w słownikach lib/i18n/dictionaries).
+// Sekcje w menu (etykiety są w słownikach lib/i18n/dictionaries).
+// Każda ma własną podstronę pod /<id> (adresy w językach: lib/i18n/config.ts → pathnames),
+// a na stronie głównej link przewija do sekcji o tym samym id.
 export const navSections = ["offer", "websites", "portfolio", "reviews", "faq", "locations"] as const;
 export type NavSection = (typeof navSections)[number];
+
+export const sectionPages = [...navSections, "contact"] as const;
+export type SectionPage = (typeof sectionPages)[number];
+
+// Data ostatniej większej zmiany treści — trafia do sitemapy (lastmod).
+export const contentUpdated = "2026-09-14";

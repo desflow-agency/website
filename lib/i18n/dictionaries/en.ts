@@ -347,6 +347,70 @@ export const en: Dictionary = {
     reject: "Reject",
   },
 
+  pages: {
+    home: "Home",
+    breadcrumbAria: "Breadcrumb",
+    related: "See also",
+    items: {
+      offer: {
+        label: "Services",
+        metaTitle: "Services & pricing — design, video, social media, websites",
+        metaDescription:
+          "desflow services: graphic design, short-form and ad video editing, social media management and animated websites. Clear pricing and a free quote within 24 hours.",
+        title: "Services: design, video, social media and *websites*",
+        lead: "Clear pricing, fast turnaround and one team from idea to launch. Pick a service or describe your project — we'll send a quote within 24 hours.",
+      },
+      websites: {
+        label: "Websites",
+        metaTitle: "Animated websites for businesses",
+        metaDescription:
+          "We design and build fast, modern websites with animations — responsive and SEO-optimised. See our work in motion.",
+        title: "Websites that *make an impression*",
+        lead: "Fast, responsive and polished down to the details. See our work in motion — exactly as visitors experience it.",
+      },
+      portfolio: {
+        label: "Portfolio",
+        metaTitle: "Portfolio — graphic design and video work",
+        metaDescription:
+          "desflow portfolio: YouTube thumbnails, banners, visual identities, social media graphics and video edits for creators and businesses.",
+        title: "Portfolio: our *work*",
+        lead: "Thumbnails, banners, visual identities and social media assets we've created for creators and brands.",
+      },
+      reviews: {
+        label: "Reviews",
+        metaTitle: "Client reviews",
+        metaDescription:
+          "What do clients say about us? Reviews from creators and businesses desflow has worked with on design, video and websites.",
+        title: "What our *clients say*",
+        lead: "Creators and businesses we've worked with, on working with desflow.",
+      },
+      faq: {
+        label: "FAQ",
+        metaTitle: "FAQ — frequently asked questions",
+        metaDescription:
+          "Answers to common questions: turnaround times, how we work together, and what design, video editing and websites cost.",
+        title: "Frequently asked *questions*",
+        lead: "Timelines, pricing, revisions and how we work — all the answers in one place.",
+      },
+      locations: {
+        label: "Where we work",
+        metaTitle: "Where we work — Szczecin, Zielona Góra, Żary and remotely",
+        metaDescription:
+          "desflow is based in Szczecin, Zielona Góra and Żary in western Poland. We meet in person there and work remotely with clients across Europe.",
+        title: "Based in western Poland, *working everywhere*",
+        lead: "We can meet in person in three cities and work remotely with clients across Poland, Germany and beyond.",
+      },
+      contact: {
+        label: "Contact",
+        metaTitle: "Contact — free quote within 24 hours",
+        metaDescription:
+          "Get in touch with desflow and tell us about your project — design, video editing, social media or a website. Free quote within 24 hours.",
+        title: "Contact & *free quote*",
+        lead: "Describe your project in a few sentences. We'll reply within 24 hours with a quote and a proposed timeline.",
+      },
+    },
+  },
+
   notFound: {
     metaTitle: "Page not found",
     kicker: "Error 404",

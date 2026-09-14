@@ -18,7 +18,7 @@ export function NotFoundView({ locale }: { locale: Locale }) {
   const home = localizePath(locale, "/");
 
   const shortcuts = (["offer", "websites", "portfolio", "locations"] as const).map((id) => ({
-    href: `${home}#${id}`,
+    href: localizePath(locale, `/${id}`),
     label: dict.nav.links[id],
   }));
 
@@ -49,7 +49,7 @@ export function NotFoundView({ locale }: { locale: Locale }) {
                 <ArrowLeft size={17} />
                 {t.home}
               </a>
-              <a href={`${home}#contact`} className="btn-site btn-site-ghost">
+              <a href={localizePath(locale, "/contact")} className="btn-site btn-site-ghost">
                 {t.contact}
                 <ArrowUpRight size={17} />
               </a>

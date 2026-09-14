@@ -24,6 +24,13 @@ export function hasLocale(value: string): value is Locale {
  * Strona główna nie potrzebuje wpisu. Polski jest bez prefiksu (/), pozostałe mają /en i /de.
  */
 export const pathnames: Record<string, Record<Locale, string>> = {
+  "/offer": { pl: "/oferta", en: "/services", de: "/leistungen" },
+  "/websites": { pl: "/strony-internetowe", en: "/websites", de: "/webseiten" },
+  "/portfolio": { pl: "/portfolio", en: "/portfolio", de: "/portfolio" },
+  "/reviews": { pl: "/opinie", en: "/reviews", de: "/bewertungen" },
+  "/faq": { pl: "/faq", en: "/faq", de: "/faq" },
+  "/locations": { pl: "/gdzie-dzialamy", en: "/locations", de: "/standorte" },
+  "/contact": { pl: "/kontakt", en: "/contact", de: "/kontakt" },
   "/privacy": {
     pl: "/polityka-prywatnosci",
     en: "/privacy-policy",

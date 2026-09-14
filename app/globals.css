@@ -184,6 +184,11 @@ html[data-theme="light"]:has(.site) body {
   padding-block: clamp(4.5rem, 10vw, 8rem);
 }
 
+/* Podstrony: pierwsza sekcja bliżej nagłówka strony. */
+.subpage-sections > .section:first-child {
+  padding-top: clamp(3.5rem, 6vw, 5rem);
+}
+
 .kicker {
   display: inline-flex;
   align-items: center;

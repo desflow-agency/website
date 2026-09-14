@@ -21,6 +21,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         "@id": `${siteConfig.url}/#website`,
         url: siteConfig.url,
         name: siteConfig.name,
+        alternateName: ["desflow.pl", "Desflow"],
         inLanguage: ["pl-PL", "en-GB", "de-DE"],
         publisher: { "@id": `${siteConfig.url}/#organization` },
       },
