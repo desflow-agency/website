@@ -1,1858 +1,380 @@
 "use client";
 
-import {
-    useEffect,
-    useState
-} from "react";
-
-import FullCalendar from "@fullcalendar/react";
+import type { EventContentArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import FullCalendar from "@fullcalendar/react";
+import { AlertTriangle, CalendarDays, ChevronLeft, ChevronRight, Clock3, Loader, Plus, Save, Trash2 } from "lucide-react";
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import {
-    CalendarDays,
-    Plus,
-    X,
-    Clock,
-    AlertTriangle,
-    User,
-    Trash2,
-    Save,
-    ChevronLeft,
-    ChevronRight
-} from "lucide-react";
+import { cn } from "@/lib/utils";
 
+import { eventPriorities, eventStatuses, formatDateTime, labelFor, optionsFor, toneClasses } from "../labels";
+import { Avatar, Badge, Button, Drawer, Field, fetchList, IconButton, Modal, PageHeader, Panel, SelectField } from "../ui";
 
 type Employee = {
-
-    id:string;
-
-    username:string;
-
-    globalName?:string | null;
-
-    avatar?:string | null;
-
+  id: string;
+  username: string;
+  globalName?: string | null;
+  avatar?: string | null;
 };
-
-
 
 type CalendarEvent = {
-
-    id:string;
-
-    title:string;
-
-    description?:string | null;
-
-    start:string;
-
-    end?:string | null;
-
-    status:string;
-
-    priority:string;
-
-    employee?:Employee | null;
-
+  id: string;
+  title: string;
+  description?: string | null;
+  start: string;
+  end?: string | null;
+  status: string;
+  priority: string;
+  employee?: Employee | null;
 };
 
+const emptyForm = { title: "", description: "", date: "", employeeId: "", priority: "MEDIUM", status: "PLANNED" };
 
+// Statusy dostępne przy tworzeniu (anulowanie dopiero przy edycji).
+const createStatuses = optionsFor(eventStatuses).filter((option) => option.value !== "CANCELLED");
 
-
-
-export function CalendarView(){
-
-
-const [events,setEvents] =
-useState<CalendarEvent[]>([]);
-
-
-
-const [employees,setEmployees] =
-useState<Employee[]>([]);
-
-
-
-const [selected,setSelected] =
-useState<CalendarEvent | null>(null);
-
-
-
-const [openCreate,setOpenCreate] =
-useState(false);
-
-
-
-
-const [title,setTitle] =
-useState("");
-
-const [description,setDescription] =
-useState("");
-
-const [date,setDate] =
-useState("");
-
-const [employeeId,setEmployeeId] =
-useState("");
-
-const [priority,setPriority] =
-useState("MEDIUM");
-
-const [status,setStatus] =
-useState("PLANNED");
-
-
-
-
-
-const [editEmployee,setEditEmployee] =
-useState("");
-
-const [editPriority,setEditPriority] =
-useState("");
-
-const [editStatus,setEditStatus] =
-useState("");
-
-
-
-
-
-async function loadEvents(){
-
-    const res =
-    await fetch(
-        "/api/admin/calendar"
-    );
-
-
-    const data =
-    await res.json();
-
-
-    setEvents(data);
-
+function isSameDay(value: string, day: Date) {
+  const date = new Date(value);
+  return date.getFullYear() === day.getFullYear() && date.getMonth() === day.getMonth() && date.getDate() === day.getDate();
 }
 
+async function send(method: "POST" | "PATCH" | "DELETE", body?: unknown, query = "") {
+  const res = await fetch(`/api/admin/calendar${query}`, {
+    method,
+    headers: body ? { "Content-Type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
 
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    alert(data?.error || (res.status === 403 ? "Brak uprawnień do edycji kalendarza" : "Coś poszło nie tak"));
+  }
 
+  return res.ok;
+}
 
+export function CalendarView() {
+  const calendarRef = useRef<FullCalendar>(null);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [viewTitle, setViewTitle] = useState("");
 
+  const [openCreate, setOpenCreate] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [saving, setSaving] = useState(false);
 
-useEffect(()=>{
+  const [selected, setSelected] = useState<CalendarEvent | null>(null);
+  const [edit, setEdit] = useState({ employeeId: "", priority: "", status: "" });
 
+  const loadEvents = useCallback(async () => {
+    setEvents(await fetchList<CalendarEvent>("/api/admin/calendar"));
+  }, []);
 
+  useEffect(() => {
     loadEvents();
+    fetchList<Employee>("/api/admin/employees").then(setEmployees);
+  }, [loadEvents]);
 
+  const employeeOptions = useMemo(
+    () => [{ label: "Bez pracownika", value: "" }, ...employees.map((employee) => ({ label: employee.globalName || employee.username, value: employee.id }))],
+    [employees]
+  );
 
-    fetch(
-        "/api/admin/employees"
-    )
-    .then(
-        r=>r.json()
-    )
-    .then(
-        setEmployees
-    );
+  const openNew = (date = "") => {
+    setForm({ ...emptyForm, date });
+    setOpenCreate(true);
+  };
 
+  async function createEvent(event: FormEvent) {
+    event.preventDefault();
+    if (!form.title.trim() || !form.date) return;
 
-},[]);
+    setSaving(true);
+    const ok = await send("POST", {
+      title: form.title.trim(),
+      description: form.description,
+      start: form.date,
+      employeeId: form.employeeId || null,
+      priority: form.priority,
+      status: form.status,
+    });
+    setSaving(false);
 
-
-
-
-
-
-
-async function createEvent(){
-
-
-    if(!title || !date)
-        return;
-
-
-
-    await fetch(
-        "/api/admin/calendar",
-        {
-
-            method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-
-            body:JSON.stringify({
-
-                title,
-
-                description,
-
-                start:date,
-
-                employeeId:
-                employeeId || null,
-
-                priority,
-
-                status
-
-            })
-
-        }
-    );
-
-
-
-    setTitle("");
-
-    setDescription("");
-
-    setDate("");
-
-    setEmployeeId("");
-
-    setPriority("MEDIUM");
-
-    setStatus("PLANNED");
-
+    if (!ok) return;
     setOpenCreate(false);
-
-
-
+    setForm(emptyForm);
     loadEvents();
+  }
 
-}
-
-
-
-
-
-
-
-
-function openEvent(event:CalendarEvent){
-
-
+  function openEvent(event: CalendarEvent) {
     setSelected(event);
+    setEdit({ employeeId: event.employee?.id || "", priority: event.priority, status: event.status });
+  }
 
+  async function saveChanges() {
+    if (!selected) return;
 
+    setSaving(true);
+    const ok = await send("PATCH", {
+      id: selected.id,
+      employeeId: edit.employeeId || null,
+      priority: edit.priority,
+      status: edit.status,
+    });
+    setSaving(false);
 
-    setEditEmployee(
-        event.employee?.id || ""
-    );
-
-
-    setEditPriority(
-        event.priority
-    );
-
-
-    setEditStatus(
-        event.status
-    );
-
-
-}
-
-
-
-
-
-
-
-
-
-async function saveChanges(){
-
-
-    if(!selected)
-        return;
-
-
-
-    await fetch(
-        "/api/admin/calendar",
-        {
-
-            method:"PATCH",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-
-            body:JSON.stringify({
-
-                id:selected.id,
-
-
-                employeeId:
-                editEmployee || null,
-
-
-                priority:
-                editPriority,
-
-
-                status:
-                editStatus
-
-            })
-
-        }
-    );
-
-
-
+    if (!ok) return;
     setSelected(null);
-
-
     loadEvents();
+  }
 
+  async function deleteEvent() {
+    if (!selected || !window.confirm("Usunąć to zadanie?")) return;
 
-}
+    if (await send("DELETE", undefined, `?id=${selected.id}`)) {
+      setSelected(null);
+      loadEvents();
+    }
+  }
 
+  const today = new Date();
+  const stats = [
+    { label: "Wszystkie zadania", value: events.length, icon: CalendarDays, tone: "brand" as const },
+    { label: "Na dziś", value: events.filter((event) => isSameDay(event.start, today)).length, icon: Clock3, tone: "sky" as const },
+    { label: "W trakcie", value: events.filter((event) => event.status === "IN_PROGRESS").length, icon: Loader, tone: "amber" as const },
+    { label: "Pilne", value: events.filter((event) => event.priority === "URGENT").length, icon: AlertTriangle, tone: "rose" as const },
+  ];
 
+  const api = () => calendarRef.current?.getApi();
 
+  const renderEvent = (arg: EventContentArg) => {
+    const event = events.find((item) => item.id === arg.event.id);
+    if (!event) return null;
 
+    const priority = labelFor(eventPriorities, event.priority);
+    const status = labelFor(eventStatuses, event.status);
+    const done = event.status === "COMPLETED" || event.status === "CANCELLED";
 
-
-
-async function deleteEvent(){
-
-
-    if(!selected)
-        return;
-
-    if(!confirm("Usunąć to zadanie?"))
-        return;
-
-
-
-    await fetch(
-        `/api/admin/calendar?id=${selected.id}`,
-        {
-            method:"DELETE"
-        }
+    return (
+      <div
+        className={cn(
+          "flex w-full items-center gap-1.5 overflow-hidden rounded-[10px] border border-line bg-raised px-1.5 py-1 text-fg shadow-sm transition hover:border-line-strong sm:gap-2 sm:px-2 sm:py-1.5",
+          done && "opacity-55"
+        )}
+        title={`${event.title} · ${status.label} · ${priority.label}`}
+      >
+        <span className={cn("h-5 w-1 shrink-0 rounded-full", toneClasses[priority.tone].bar)} />
+        {event.employee && <Avatar src={event.employee.avatar} name={event.employee.globalName || event.employee.username} size={18} className="hidden sm:grid" />}
+        <span className={cn("truncate text-[11px] font-semibold sm:text-xs", done && "line-through")}>{event.title}</span>
+      </div>
     );
-
-
-
-    setSelected(null);
-
-
-    loadEvents();
-
-}
-
-
-
-
-
-
-
-
-const today =
-events.filter(
-e=>
-e.start.startsWith(
-new Date()
-.toISOString()
-.split("T")[0]
-)
-).length;
-
-
-
-
-
-const urgent =
-events.filter(
-e=>
-e.priority==="URGENT"
-).length;
-
-
-
-
-
-
-
-
-
-return (
-
-<div className="space-y-6">
-
-
-
-<div className="flex justify-between items-center">
-
-
-<div>
-
-<h1
-className="
-text-3xl
-font-bold
-flex
-gap-3
-items-center
-"
->
-
-<CalendarDays/>
-
-Kalendarz projektów
-
-</h1>
-
-
-<p className="text-gray-500">
-
-Zarządzanie zadaniami zespołu
-
-</p>
-
-
-</div>
-
-
-
-
-<button
-
-onClick={()=>setOpenCreate(true)}
-
-className="
-bg-black
-text-white
-rounded-xl
-px-5
-py-3
-flex
-items-center
-gap-2
-hover:opacity-90
-transition
-"
-
->
-
-<Plus size={18}/>
-
-Nowe zadanie
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div className="
-grid
-md:grid-cols-3
-gap-4
-">
-
-
-<Stat
-
-title="Wszystkie"
-
-value={events.length}
-
-icon={<CalendarDays/>}
-
-/>
-
-
-
-<Stat
-
-title="Dzisiaj"
-
-value={today}
-
-icon={<Clock/>}
-
-/>
-
-
-
-<Stat
-
-title="Pilne"
-
-value={urgent}
-
-icon={<AlertTriangle/>}
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div
-className="
-bg-white
-border
-rounded-3xl
-p-6
-shadow-sm
-"
->
-
-
-
-<FullCalendar
-
-
-plugins={[
-
-dayGridPlugin,
-
-interactionPlugin
-
-]}
-
-
-
-initialView="dayGridMonth"
-
-
-
-height="750px"
-
-
-
-editable={true}
-
-
-
-dayMaxEventRows={5}
-
-
-
-eventDisplay="block"
-
-
-
-
-eventClassNames="
-!rounded-xl
-!border-none
-!min-h-[42px]
-shadow-sm
-"
-
-
-
-
-eventContent={(arg)=>{
-
-
-const event =
-events.find(
-e=>e.id===arg.event.id
-);
-
-
-
-if(!event)
-return null;
-
-
-
-
-return (
-
-<div
-className="
-flex
-items-center
-gap-2
-px-2
-py-2
-w-full
-overflow-hidden
-"
->
-
-
-{
-event.employee?.avatar ?
-
-
-<img
-
-src={
-event.employee.avatar
-}
-
-className="
-w-7
-h-7
-rounded-full
-object-cover
-ring-2
-ring-white
-"
-
-/>
-
-
-:
-
-<div
-className="
-w-7
-h-7
-rounded-full
-bg-white/40
-flex
-items-center
-justify-center
-"
->
-
-<User size={14}/>
-
-</div>
-
-
-}
-
-
-
-<span
-className="
-text-xs
-font-semibold
-truncate
-"
->
-
-{event.title}
-
-</span>
-
-
-
-</div>
-
-)
-
-
-}}
-
-
-
-
-events={
-
-events.map(event=>(
-
-{
-
-id:event.id,
-
-title:event.title,
-
-start:event.start,
-
-end:event.end || undefined,
-
-
-backgroundColor:
-
-getColor(
-event.status,
-event.priority
-)
-
-
-}
-
-))
-
-}
-
-
-
-
-eventClick={(info)=>{
-
-
-const event =
-events.find(
-e=>e.id===info.event.id
-);
-
-
-
-if(event)
-
-openEvent(event);
-
-
-}}
-
-
-
-
-
-
-
-eventDrop={async(info)=>{
-
-
-await fetch(
-
-"/api/admin/calendar",
-
-{
-
-method:"PATCH",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-
-body:JSON.stringify({
-
-id:
-info.event.id,
-
-
-start:
-info.event.start
-?.toISOString(),
-
-
-end:
-info.event.end
-?.toISOString() || null
-
-
-})
-
-
-}
-
-);
-
-
-
-loadEvents();
-
-
-}}
-
-
-
-/>
-
-
-</div>
-{/* CREATE TASK */}
-
-{
-openCreate && (
-
-<Modal
-
-title="Nowe zadanie"
-
-close={()=>setOpenCreate(false)}
-
->
-
-
-<input
-
-className="
-w-full
-rounded-xl
-border
-px-4
-py-3
-outline-none
-focus:border-black
-"
-
-placeholder="Nazwa zadania"
-
-value={title}
-
-onChange={
-e=>setTitle(e.target.value)
-}
-
-/>
-
-
-
-
-<textarea
-
-className="
-w-full
-rounded-xl
-border
-px-4
-py-3
-outline-none
-focus:border-black
-min-h-30
-"
-
-placeholder="Opis zadania"
-
-value={description}
-
-onChange={
-e=>setDescription(e.target.value)
-}
-
-/>
-
-
-
-
-
-<input
-
-type="date"
-
-className="
-w-full
-rounded-xl
-border
-px-4
-py-3
-"
-
-value={date}
-
-onChange={
-e=>setDate(e.target.value)
-}
-
-/>
-
-
-
-
-
-
-<SelectBox
-
-
-value={employeeId}
-
-
-onChange={setEmployeeId}
-
-
-options={[
-
-{
-label:"👤 Bez pracownika",
-value:""
-},
-
-
-...employees.map(e=>({
-
-label:
-e.globalName || e.username,
-
-value:e.id
-
-}))
-
-
-]}
-
-
-/>
-
-
-
-
-
-
-
-<SelectBox
-
-
-value={priority}
-
-
-onChange={setPriority}
-
-
-options={[
-
-{
-label:"🟢 Niski",
-value:"LOW"
-},
-
-{
-label:"🟡 Normalny",
-value:"MEDIUM"
-},
-
-{
-label:"🟠 Wysoki",
-value:"HIGH"
-},
-
-{
-label:"🔴 Pilny",
-value:"URGENT"
-}
-
-
-]}
-
-
-/>
-
-
-
-
-
-
-<SelectBox
-
-
-value={status}
-
-
-onChange={setStatus}
-
-
-options={[
-
-{
-label:"📅 Zaplanowane",
-value:"PLANNED"
-},
-
-{
-label:"⚙️ W trakcie",
-value:"IN_PROGRESS"
-},
-
-{
-label:"👀 Klient",
-value:"CLIENT_REVIEW"
-},
-
-{
-label:"✅ Gotowe",
-value:"COMPLETED"
-}
-
-]}
-
-
-/>
-
-
-
-
-
-
-<button
-
-onClick={createEvent}
-
-className="
-w-full
-rounded-2xl
-bg-black
-text-white
-py-4
-font-semibold
-hover:opacity-90
-transition
-"
-
->
-
-Dodaj zadanie
-
-</button>
-
-
-
-</Modal>
-
-
-)
-
-}
-
-
-
-
-
-
-
-
-
-{/* EDIT DRAWER */}
-
-
-{
-selected && (
-
-
-<div
-
-className="
-fixed
-right-0
-top-0
-h-full
-w-full
-max-w-md
-bg-white
-shadow-2xl
-z-50
-p-8
-overflow-y-auto
-"
-
->
-
-
-
-<div
-
-className="
-flex
-justify-between
-items-start
-"
-
->
-
-
-<div>
-
-<p
-
-className="
-text-sm
-text-gray-400
-"
-
->
-
-Zadanie
-
-</p>
-
-
-<h2
-
-className="
-text-2xl
-font-bold
-"
-
->
-
-Edycja
-
-</h2>
-
-
-</div>
-
-
-
-
-<button
-
-onClick={()=>setSelected(null)}
-
-className="
-p-2
-rounded-xl
-hover:bg-gray-100
-"
-
->
-
-<X/>
-
-</button>
-
-
-</div>
-
-
-
-
-
-
-
-<div className="
-mt-8
-space-y-6
-">
-
-
-<div>
-
-
-<div
-
-className="
-flex
-items-center
-gap-3
-"
-
->
-
-
-{
-selected.employee?.avatar && (
-
-<img
-
-src={
-selected.employee.avatar
-}
-
-className="
-w-10
-h-10
-rounded-full
-object-cover
-"
-
- />
-
-)
-
-}
-
-
-
-<div>
-
-<h3
-
-className="
-text-xl
-font-bold
-"
-
->
-
-{selected.title}
-
-</h3>
-
-
-<p
-
-className="
-text-sm
-text-gray-500
-"
-
->
-
-{
-selected.description ||
-"Brak opisu"
-}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-<div
-
-className="
-rounded-3xl
-bg-gray-50
-p-5
-space-y-5
-"
-
->
-
-
-<div>
-
-
-<p
-
-className="
-text-xs
-uppercase
-tracking-wide
-text-gray-400
-mb-2
-"
-
->
-
-Pracownik
-
-</p>
-
-
-<SelectBox
-
-value={editEmployee}
-
-onChange={setEditEmployee}
-
-options={[
-
-{
-label:"👤 Bez pracownika",
-value:""
-},
-
-
-...employees.map(e=>({
-
-label:
-e.globalName || e.username,
-
-value:e.id
-
-}))
-
-
-]}
-
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div>
-
-
-<p
-
-className="
-text-xs
-uppercase
-tracking-wide
-text-gray-400
-mb-2
-"
-
->
-
-Status
-
-</p>
-
-
-<SelectBox
-
-value={editStatus}
-
-onChange={setEditStatus}
-
-options={[
-
-{
-label:"📅 Zaplanowane",
-value:"PLANNED"
-},
-
-{
-label:"⚙️ W trakcie",
-value:"IN_PROGRESS"
-},
-
-{
-label:"👀 Klient",
-value:"CLIENT_REVIEW"
-},
-
-{
-label:"✅ Gotowe",
-value:"COMPLETED"
-},
-
-{
-label:"❌ Anulowane",
-value:"CANCELLED"
-}
-
-
-]}
-
-
-/>
-
-
-</div>
-
-
-
-
-
-
-
-<div>
-
-
-<p
-
-className="
-text-xs
-uppercase
-tracking-wide
-text-gray-400
-mb-2
-"
-
->
-
-Priorytet
-
-</p>
-
-
-
-<SelectBox
-
-value={editPriority}
-
-onChange={setEditPriority}
-
-options={[
-
-{
-label:"🟢 Niski",
-value:"LOW"
-},
-
-{
-label:"🟡 Normalny",
-value:"MEDIUM"
-},
-
-{
-label:"🟠 Wysoki",
-value:"HIGH"
-},
-
-{
-label:"🔴 Pilny",
-value:"URGENT"
-}
-
-
-]}
-
-
-/>
-
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<button
-
-onClick={saveChanges}
-
-className="
-mt-6
-w-full
-rounded-2xl
-bg-black
-text-white
-py-4
-font-semibold
-flex
-justify-center
-items-center
-gap-2
-"
-
->
-
-<Save size={18}/>
-
-Zapisz zmiany
-
-</button>
-
-
-
-
-
-
-
-
-<button
-
-onClick={deleteEvent}
-
-className="
-mt-3
-w-full
-rounded-2xl
-bg-red-50
-text-red-600
-py-4
-font-semibold
-flex
-justify-center
-items-center
-gap-2
-hover:bg-red-100
-"
-
->
-
-
-<Trash2 size={18}/>
-
-Usuń zadanie
-
-
-</button>
-
-
-
-
-
-</div>
-
-
-</div>
-
-
-)
-
-}
-
-
-
-</div>
-
-);
-
-}
-
-
-
-
-
-
-
-
-
-function Modal({
-
-children,
-
-title,
-
-close
-
-}:any){
-
-
-return (
-
-<div
-
-className="
-fixed
-inset-0
-bg-black/40
-backdrop-blur-sm
-flex
-items-center
-justify-center
-z-50
-"
-
->
-
-
-<div
-
-className="
-bg-white
-rounded-3xl
-p-7
-w-full
-max-w-lg
-space-y-4
-shadow-2xl
-"
-
->
-
-
-<div
-
-className="
-flex
-justify-between
-items-center
-"
-
->
-
-
-<h2
-
-className="
-text-xl
-font-bold
-"
-
->
-
-{title}
-
-</h2>
-
-
-
-<button
-
-onClick={close}
-
-className="
-rounded-xl
-p-2
-hover:bg-gray-100
-"
-
->
-
-<X/>
-
-</button>
-
-
-
-</div>
-
-
-
-{children}
-
-
-</div>
-
-
-</div>
-
-
-)
-
-
-}
-
-
-
-
-
-
-
-
-
-function SelectBox({
-
-value,
-
-onChange,
-
-options
-
-}:{
-
-value:string;
-
-onChange:(v:string)=>void;
-
-options:{
-label:string;
-value:string;
-}[];
-
-}){
-
-
-return (
-
-<select
-
-
-value={value}
-
-
-onChange={
-e=>onChange(e.target.value)
-}
-
-
-
-className="
-w-full
-rounded-xl
-border
-bg-white
-px-4
-py-3
-font-medium
-outline-none
-cursor-pointer
-hover:border-black
-transition
-"
-
->
-
-
-{
-
-options.map(option=>(
-
-
-<option
-
-key={option.value}
-
-value={option.value}
-
->
-
-{option.label}
-
-</option>
-
-
-))
-
-
-}
-
-
-
-</select>
-
-
-)
-
-
-}
-
-
-
-
-
-
-
-
-
-function Stat({
-
-icon,
-
-title,
-
-value
-
-}:any){
-
-
-return (
-
-<div
-
-className="
-bg-white
-border
-rounded-2xl
-p-5
-flex
-items-center
-gap-4
-"
-
->
-
-
-<div
-
-className="
-bg-gray-100
-rounded-xl
-p-3
-"
-
->
-
-{icon}
-
-</div>
-
-
-
-<div>
-
-
-<p
-
-className="
-text-gray-500
-text-sm
-"
-
->
-
-{title}
-
-</p>
-
-
-
-<h3
-
-className="
-text-3xl
-font-bold
-"
-
->
-
-{value}
-
-</h3>
-
-
-
-</div>
-
-
-
-</div>
-
-)
-
-
-}
-
-
-
-
-
-
-
-
-
-function getColor(
-
-status:string,
-
-priority:string
-
-){
-
-
-if(priority==="URGENT")
-
-return "#ef4444";
-
-
-
-if(status==="COMPLETED")
-
-return "#22c55e";
-
-
-
-if(status==="IN_PROGRESS")
-
-return "#f59e0b";
-
-
-
-return "#6366f1";
-
-
+  };
+
+  return (
+    <div className="space-y-7">
+      <PageHeader
+        kicker="Planowanie"
+        title="Kalendarz *projektów*"
+        description="Zadania zespołu w jednym miejscu. Przeciągnij zadanie, żeby zmienić termin, albo kliknij dzień, żeby dodać nowe."
+        actions={
+          <Button variant="primary" onClick={() => openNew()}>
+            <Plus size={17} />
+            Nowe zadanie
+          </Button>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        {stats.map(({ label, value, icon: Icon, tone }, index) => (
+          <Panel key={label} delay={index * 0.05} className="flex items-center gap-4 p-4 sm:p-5">
+            <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-2xl", toneClasses[tone].soft)}>
+              <Icon size={19} strokeWidth={1.9} />
+            </span>
+            <div className="min-w-0">
+              <p className="text-2xl font-semibold leading-none tracking-[-0.04em] sm:text-3xl">{value}</p>
+              <p className="mt-1.5 truncate text-xs text-soft sm:text-sm">{label}</p>
+            </div>
+          </Panel>
+        ))}
+      </div>
+
+      <Panel delay={0.15} className="admin-calendar p-3 sm:p-6">
+        {/* PASEK NAWIGACJI */}
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 px-1 sm:px-0">
+          <h2 className="text-xl font-semibold capitalize tracking-[-0.03em] sm:text-2xl">{viewTitle}</h2>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => api()?.today()}>
+              Dziś
+            </Button>
+            <IconButton label="Poprzedni miesiąc" onClick={() => api()?.prev()} className="rounded-full">
+              <ChevronLeft size={18} />
+            </IconButton>
+            <IconButton label="Następny miesiąc" onClick={() => api()?.next()} className="rounded-full">
+              <ChevronRight size={18} />
+            </IconButton>
+          </div>
+        </div>
+
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          locale="pl"
+          firstDay={1}
+          headerToolbar={false}
+          height="auto"
+          fixedWeekCount={false}
+          editable
+          dayMaxEventRows={3}
+          moreLinkText={(count) => `+${count} więcej`}
+          eventDisplay="block"
+          datesSet={(info) => setViewTitle(info.view.title)}
+          events={events.map((event) => ({ id: event.id, title: event.title, start: event.start, end: event.end || undefined }))}
+          eventContent={renderEvent}
+          eventClick={(info) => {
+            const event = events.find((item) => item.id === info.event.id);
+            if (event) openEvent(event);
+          }}
+          dateClick={(info) => openNew(info.dateStr)}
+          eventDrop={async (info) => {
+            const ok = await send("PATCH", {
+              id: info.event.id,
+              start: info.event.start?.toISOString(),
+              end: info.event.end?.toISOString() || null,
+            });
+            if (!ok) info.revert();
+            loadEvents();
+          }}
+        />
+
+        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line px-1 pt-4 text-xs text-soft sm:px-0">
+          <span className="text-faint">Priorytet:</span>
+          {Object.values(eventPriorities).map(({ label, tone }) => (
+            <span key={label} className="inline-flex items-center gap-1.5">
+              <span className={cn("h-3 w-1 rounded-full", toneClasses[tone].bar)} />
+              {label}
+            </span>
+          ))}
+        </div>
+      </Panel>
+
+      {/* NOWE ZADANIE */}
+      <Modal open={openCreate} onClose={() => setOpenCreate(false)} kicker="Kalendarz" title="Nowe zadanie">
+        <form onSubmit={createEvent} className="space-y-4">
+          <Field label="Nazwa zadania">
+            <input
+              autoFocus
+              required
+              value={form.title}
+              onChange={(event) => setForm({ ...form, title: event.target.value })}
+              placeholder="np. Rolka dla AdviceBot"
+              className="admin-field"
+            />
+          </Field>
+
+          <Field label="Opis">
+            <textarea
+              value={form.description}
+              onChange={(event) => setForm({ ...form, description: event.target.value })}
+              placeholder="Szczegóły, linki, uwagi…"
+              className="admin-field"
+            />
+          </Field>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Termin">
+              <input
+                type="date"
+                required
+                value={form.date}
+                onChange={(event) => setForm({ ...form, date: event.target.value })}
+                className="admin-field"
+              />
+            </Field>
+            <Field label="Pracownik">
+              <SelectField value={form.employeeId} onChange={(employeeId) => setForm({ ...form, employeeId })} options={employeeOptions} />
+            </Field>
+            <Field label="Priorytet">
+              <SelectField value={form.priority} onChange={(priority) => setForm({ ...form, priority })} options={optionsFor(eventPriorities)} />
+            </Field>
+            <Field label="Status">
+              <SelectField value={form.status} onChange={(status) => setForm({ ...form, status })} options={createStatuses} />
+            </Field>
+          </div>
+
+          <Button type="submit" variant="primary" size="lg" className="mt-2 w-full" disabled={saving || !form.title.trim() || !form.date}>
+            <Plus size={17} />
+            {saving ? "Dodawanie…" : "Dodaj zadanie"}
+          </Button>
+        </form>
+      </Modal>
+
+      {/* EDYCJA */}
+      <Drawer
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        kicker="Zadanie"
+        title={selected?.title || ""}
+        footer={
+          <div className="flex gap-2">
+            <Button variant="danger" onClick={deleteEvent} className="shrink-0">
+              <Trash2 size={16} />
+              Usuń
+            </Button>
+            <Button variant="primary" onClick={saveChanges} disabled={saving} className="flex-1">
+              <Save size={16} />
+              {saving ? "Zapisywanie…" : "Zapisz zmiany"}
+            </Button>
+          </div>
+        }
+      >
+        {selected && (
+          <div className="space-y-6">
+            <div className="flex flex-wrap gap-2">
+              <Badge tone={labelFor(eventStatuses, selected.status).tone} dot>
+                {labelFor(eventStatuses, selected.status).label}
+              </Badge>
+              <Badge tone={labelFor(eventPriorities, selected.priority).tone}>
+                Priorytet: {labelFor(eventPriorities, selected.priority).label}
+              </Badge>
+            </div>
+
+            <div className="rounded-2xl border border-line bg-ink/[0.03] p-4">
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-faint">Opis</p>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-soft">{selected.description || "Brak opisu"}</p>
+              <p className="mt-4 flex items-center gap-2 text-xs text-faint">
+                <CalendarDays size={13} />
+                {formatDateTime(selected.start)}
+                {selected.end && ` → ${formatDateTime(selected.end)}`}
+              </p>
+            </div>
+
+            {selected.employee && (
+              <div className="flex items-center gap-3">
+                <Avatar src={selected.employee.avatar} name={selected.employee.globalName || selected.employee.username} size={36} />
+                <p className="text-sm">
+                  <span className="text-faint">Przypisane do </span>
+                  <span className="font-semibold">{selected.employee.globalName || selected.employee.username}</span>
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <Field label="Pracownik">
+                <SelectField value={edit.employeeId} onChange={(employeeId) => setEdit({ ...edit, employeeId })} options={employeeOptions} />
+              </Field>
+              <Field label="Status">
+                <SelectField value={edit.status} onChange={(status) => setEdit({ ...edit, status })} options={optionsFor(eventStatuses)} />
+              </Field>
+              <Field label="Priorytet">
+                <SelectField value={edit.priority} onChange={(priority) => setEdit({ ...edit, priority })} options={optionsFor(eventPriorities)} />
+              </Field>
+            </div>
+          </div>
+        )}
+      </Drawer>
+    </div>
+  );
 }

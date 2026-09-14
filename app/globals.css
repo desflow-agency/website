@@ -593,56 +593,6 @@ html[data-theme="light"] .theme-icon__rays {
   }
 }
 
-/* ================================================== */
-/* PANEL ADMINA (klasy używane w app/admin)           */
-/* ================================================== */
-
-.eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--violet);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
-  border-radius: 999px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.25s;
-}
-
-.btn-primary {
-  background: var(--ink);
-  color: white;
-  box-shadow: 0 10px 30px #11132220;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  background: var(--violet);
-}
-
-.card {
-  background: white;
-  border: 1px solid #e5e5ee;
-  border-radius: 24px;
-  box-shadow: 0 12px 35px #27274508;
-}
-
-textarea:not(.site *) {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #e1e1e9;
-  border-radius: 12px;
-  font: inherit;
-  outline-color: var(--violet);
-}
-
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
@@ -734,54 +684,228 @@ textarea:not(.site *) {
   }
 }
 
-.fc .fc-toolbar {
-  margin-bottom: 24px;
+/* ================================================== */
+/* PANEL ADMINA (ta sama paleta i motywy co strona)   */
+/* ================================================== */
+
+/* Pola formularzy: input, select, textarea (w warstwie, żeby klasy Tailwinda mogły je nadpisać). */
+@layer components {
+  /* Pola formularzy: input, select, textarea. */
+  .admin-field {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    border: 1px solid var(--color-line-strong);
+    background: color-mix(in srgb, var(--color-ink) 3%, var(--color-panel));
+    padding: 0 14px;
+    color: var(--color-fg);
+    font: inherit;
+    font-size: 14px;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .admin-field::placeholder {
+    color: var(--color-faint);
+  }
+
+  .admin-field:hover {
+    border-color: color-mix(in srgb, var(--color-ink) 24%, transparent);
+  }
+
+  .admin-field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand) 18%, transparent);
+  }
+
+
+
+  .admin-field:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  textarea.admin-field {
+    min-height: 120px;
+    padding: 12px 14px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  select.admin-field {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23888899' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  select.admin-field option {
+    background: var(--color-panel);
+    color: var(--color-fg);
+  }
+
+  .admin-field[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+
+  html[data-theme="dark"] .admin-field[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
 }
 
-.fc .fc-toolbar-title {
-  font-size: 24px;
-  font-weight: 700;
+.site .admin-field:focus-visible {
+  outline: none;
 }
 
-.fc .fc-button {
-  background: white !important;
-  color: #111 !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 14px !important;
-  padding: 10px 16px !important;
-  font-weight: 600 !important;
-  box-shadow: none !important;
-  transition: 0.2s;
+/* Cienki pasek przewijania w panelach. */
+.admin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
 }
 
-.fc .fc-button:hover {
-  background: #f3f4f6 !important;
+/* ---------- FullCalendar ---------- */
+
+.admin-calendar .fc {
+  --fc-border-color: var(--color-line);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: color-mix(in srgb, var(--color-ink) 3%, transparent);
+  --fc-today-bg-color: color-mix(in srgb, var(--color-brand) 9%, transparent);
+  --fc-event-border-color: transparent;
+  --fc-highlight-color: color-mix(in srgb, var(--color-brand) 14%, transparent);
+  --fc-non-business-color: transparent;
+  color: var(--color-fg);
+  font-size: 13px;
 }
 
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-  background: black !important;
-  color: white !important;
+.admin-calendar .fc-theme-standard .fc-scrollgrid {
+  border: 0;
 }
 
-.fc .fc-prev-button,
-.fc .fc-next-button {
-  width: 42px;
-  height: 42px;
-  padding: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.admin-calendar .fc-theme-standard td,
+.admin-calendar .fc-theme-standard th {
+  border-color: var(--color-line);
 }
 
-.fc .fc-today-button {
-  margin-left: 10px !important;
+/* Bez zewnętrznych linii siatki — tylko linie między dniami. */
+.admin-calendar .fc-scrollgrid-section > td,
+.admin-calendar .fc-scrollgrid-section > th {
+  border: 0;
 }
 
-.fc .fc-daygrid-day {
-  min-height: 120px;
+.admin-calendar .fc-daygrid-day:last-child,
+.admin-calendar .fc-col-header-cell:last-child {
+  border-right: 0;
 }
 
-.fc-event {
-  border-radius: 12px !important;
-  padding: 4px !important;
+.admin-calendar .fc-daygrid-body tr:last-child > td {
+  border-bottom: 0;
+}
+
+.admin-calendar .fc-col-header-cell {
+  border-width: 0 0 1px;
+  padding: 10px 0;
+}
+
+.admin-calendar .fc-col-header-cell-cushion {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  text-decoration: none;
+}
+
+.admin-calendar .fc-daygrid-day-frame {
+  min-height: 118px;
+  padding: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.admin-calendar .fc-daygrid-day:hover .fc-daygrid-day-frame {
+  background: color-mix(in srgb, var(--color-ink) 2.5%, transparent);
+}
+
+.admin-calendar .fc-daygrid-day-number {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  margin: 2px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-soft);
+  text-decoration: none;
+}
+
+.admin-calendar .fc-day-other .fc-daygrid-day-number {
+  color: var(--color-faint);
+  opacity: 0.5;
+}
+
+.admin-calendar .fc-day-today .fc-daygrid-day-number {
+  background: var(--color-brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-calendar .fc-daygrid-event-harness {
+  margin-top: 4px;
+}
+
+.admin-calendar .fc-daygrid-event {
+  margin: 0 2px !important;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.admin-calendar .fc-daygrid-event:focus-visible {
+  outline: 2px solid var(--color-brand);
+}
+
+.admin-calendar .fc-event-dragging {
+  opacity: 0.9;
+}
+
+.admin-calendar .fc-daygrid-more-link {
+  margin: 4px 6px 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-brand);
+}
+
+.admin-calendar .fc-popover {
+  overflow: hidden;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 16px;
+  background: var(--color-panel);
+  box-shadow: var(--shadow-float);
+}
+
+.admin-calendar .fc-popover-header {
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+  color: var(--color-fg);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .admin-calendar .fc-daygrid-day-frame {
+    min-height: 76px;
+    padding: 1px;
+  }
+
+  .admin-calendar .fc-col-header-cell-cushion {
+    letter-spacing: 0.04em;
+  }
 }

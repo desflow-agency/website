@@ -28,6 +28,12 @@ export const PERMISSIONS = {
   
   
   
+    CALENDAR_VIEW:
+    "calendar.view",
+
+    CALENDAR_EDIT:
+    "calendar.edit",
+
     SERVICES_EDIT:
     "services.edit"
   

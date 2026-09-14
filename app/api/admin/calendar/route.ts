@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
+import { forbidden, requirePermission } from "@/lib/admin-api";
 import { prisma } from "@/lib/prisma";
 
 
 
 export async function GET() {
+
+    // Tylko zalogowani pracownicy z uprawnieniem (ADMIN ma wszystkie).
+    if (!(await requirePermission("calendar.view"))) {
+        return forbidden();
+    }
+
 
     try {
 
@@ -55,6 +62,12 @@ export async function GET() {
 export async function POST(
     req: Request
 ) {
+
+    // Tylko zalogowani pracownicy z uprawnieniem (ADMIN ma wszystkie).
+    if (!(await requirePermission("calendar.edit"))) {
+        return forbidden();
+    }
+
 
     try {
 
@@ -172,6 +185,12 @@ export async function POST(
 export async function PATCH(
     req:Request
 ){
+
+    // Tylko zalogowani pracownicy z uprawnieniem (ADMIN ma wszystkie).
+    if (!(await requirePermission("calendar.edit"))) {
+        return forbidden();
+    }
+
 
     try {
 
@@ -360,6 +379,12 @@ export async function PATCH(
 export async function DELETE(
     req: Request
 ){
+
+    // Tylko zalogowani pracownicy z uprawnieniem (ADMIN ma wszystkie).
+    if (!(await requirePermission("calendar.edit"))) {
+        return forbidden();
+    }
+
 
     try {
 
