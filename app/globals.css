@@ -424,6 +424,15 @@ html[data-theme="light"]:has(.site) body {
   rotate: var(--angle);
 }
 
+/* Wersja lekka (telefony): bez obracania maski pierścienia i bez poświaty iskier. */
+.theme-fx--lite .theme-fx__ring {
+  animation: theme-fx-expand var(--fx-duration) cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.theme-fx--lite .theme-fx__spark {
+  box-shadow: none;
+}
+
 @keyframes theme-fx-expand {
   0% {
     scale: 0;
@@ -572,27 +581,35 @@ html[data-theme="light"] .theme-icon__rays {
   }
 }
 
-/* Portfolio: porównanie przed / po — linia podziału sama przesuwa się tam i z powrotem. */
-.compare-thumb__before {
-  clip-path: inset(0 50% 0 0);
-  animation: compare-before 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+/* Portfolio: porównanie przed / po — linia podziału sama przesuwa się tam i z powrotem (same transformacje, bez migania). */
+.compare-thumb__clip {
+  animation: compare-clip 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.compare-thumb__image {
+  animation: compare-image 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
 .compare-thumb__line {
-  left: 50%;
   animation: compare-line 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
-@keyframes compare-before {
-  0%, 100% { clip-path: inset(0 50% 0 0); }
-  35% { clip-path: inset(0 12% 0 0); }
-  70% { clip-path: inset(0 88% 0 0); }
+@keyframes compare-clip {
+  0%, 100% { transform: translate3d(-50%, 0, 0); }
+  35% { transform: translate3d(-12%, 0, 0); }
+  70% { transform: translate3d(-88%, 0, 0); }
+}
+
+@keyframes compare-image {
+  0%, 100% { transform: translate3d(50%, 0, 0); }
+  35% { transform: translate3d(12%, 0, 0); }
+  70% { transform: translate3d(88%, 0, 0); }
 }
 
 @keyframes compare-line {
-  0%, 100% { left: 50%; }
-  35% { left: 88%; }
-  70% { left: 12%; }
+  0%, 100% { transform: translate3d(50%, 0, 0); }
+  35% { transform: translate3d(88%, 0, 0); }
+  70% { transform: translate3d(12%, 0, 0); }
 }
 
 /* Animacje dema stron są pauzowane, gdy element jest poza ekranem. */

@@ -321,7 +321,7 @@ function Lightbox({
                 event.stopPropagation();
                 go(-1);
               }}
-              className="absolute left-0 grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur transition hover:bg-white/15 sm:-left-2"
+              className="absolute bottom-2 left-2 sm:bottom-auto grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur transition hover:bg-white/15 sm:-left-2"
             >
               <ChevronLeft size={20} />
             </button>
@@ -332,7 +332,7 @@ function Lightbox({
                 event.stopPropagation();
                 go(1);
               }}
-              className="absolute right-0 grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur transition hover:bg-white/15 sm:-right-2"
+              className="absolute bottom-2 right-2 sm:bottom-auto grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur transition hover:bg-white/15 sm:-right-2"
             >
               <ChevronRight size={20} />
             </button>

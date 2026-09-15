@@ -7,6 +7,7 @@ import { THEME_STORAGE_KEY, type Theme, themeColors } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const DURATION = 1100;
+const LITE_DURATION = 750;
 const SPARK_COLORS = ["#8b8cff", "#5ee6cf", "#ffb547", "#ff5fa2", "#ffffff"];
 
 function readTheme(): Theme {
@@ -30,9 +31,20 @@ function applyTheme(theme: Theme) {
  *  1. nowy motyw "odsłania się" kołem rosnącym od przycisku (clip-path),
  *  2. stary motyw w tle oddala się, rozmywa i ciemnieje,
  *  3. nad wszystkim: tęczowy pierścień fali na krawędzi koła, błysk i iskry.
+ *
+ * Na telefonach i słabszych urządzeniach wersja lżejsza: bez rozmyć (filter: blur) i z mniejszą liczbą iskier —
+ * pełnoekranowe rozmycie potrafi przyciąć animację i całą stronę.
  */
+function isLiteDevice() {
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const cores = navigator.hardwareConcurrency || 8;
+  return coarse || window.innerWidth < 768 || cores <= 4;
+}
+
 function switchTheme(next: Theme, originX: number, originY: number, onApplied: () => void) {
   const root = document.documentElement;
+  const lite = isLiteDevice();
+  const duration = lite ? LITE_DURATION : DURATION;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (reducedMotion) {
@@ -42,6 +54,13 @@ function switchTheme(next: Theme, originX: number, originY: number, onApplied: (
   }
 
   if (!document.startViewTransition) {
+    // Płynna zmiana kolorów wszystkich elementów jest zbyt ciężka dla telefonu — tam zmiana od razu.
+    if (lite) {
+      applyTheme(next);
+      onApplied();
+      return;
+    }
+
     root.classList.add("theme-fade");
     applyTheme(next);
     onApplied();
@@ -54,7 +73,7 @@ function switchTheme(next: Theme, originX: number, originY: number, onApplied: (
     Math.max(originY, window.innerHeight - originY)
   );
 
-  const fx = createEffectsLayer(originX, originY, radius);
+  const fx = createEffectsLayer(originX, originY, radius, lite, duration);
 
   const transition = document.startViewTransition(() => {
     flushSync(() => {
@@ -74,8 +93,10 @@ function switchTheme(next: Theme, originX: number, originY: number, onApplied: (
           `circle(${radius}px at ${originX}px ${originY}px)`,
         ],
       },
-      { duration: DURATION, easing, pseudoElement: "::view-transition-new(root)", fill: "both" }
+      { duration, easing, pseudoElement: "::view-transition-new(root)", fill: "both" }
     );
+
+    if (lite) return;
 
     root.animate(
       {
@@ -90,14 +111,14 @@ function switchTheme(next: Theme, originX: number, originY: number, onApplied: (
   transition.finished.finally(() => fx.remove());
 }
 
-function createEffectsLayer(x: number, y: number, radius: number) {
+function createEffectsLayer(x: number, y: number, radius: number, lite: boolean, duration: number) {
   const layer = document.createElement("div");
-  layer.className = "theme-fx";
+  layer.className = lite ? "theme-fx theme-fx--lite" : "theme-fx";
   layer.setAttribute("aria-hidden", "true");
   layer.style.setProperty("--fx-x", `${x}px`);
   layer.style.setProperty("--fx-y", `${y}px`);
   layer.style.setProperty("--fx-r", `${radius}px`);
-  layer.style.setProperty("--fx-duration", `${DURATION}ms`);
+  layer.style.setProperty("--fx-duration", `${duration}ms`);
 
   const glow = document.createElement("span");
   glow.className = "theme-fx__glow";
@@ -105,10 +126,14 @@ function createEffectsLayer(x: number, y: number, radius: number) {
   ring.className = "theme-fx__ring";
   const flash = document.createElement("span");
   flash.className = "theme-fx__flash";
-  layer.append(glow, ring, flash);
+  if (lite) {
+    layer.append(ring, flash);
+  } else {
+    layer.append(glow, ring, flash);
+  }
 
   // Iskry: okrągłe drobinki + promienie strzelające na zewnątrz.
-  const count = 34;
+  const count = lite ? 12 : 34;
   for (let index = 0; index < count; index++) {
     const spark = document.createElement("span");
     const isRay = index % 3 === 0;

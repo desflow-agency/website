@@ -42,7 +42,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         hasOfferCatalog: {
           "@type": "OfferCatalog",
           name: dict.meta.offerCatalog,
-          itemListElement: services.map(([, , price, , discount], index) => ({
+          itemListElement: services.map(([, , price, , discount, maxPrice], index) => ({
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
@@ -54,6 +54,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
                   priceSpecification: {
                     "@type": "PriceSpecification",
                     minPrice: finalPrice(price, discount),
+                    ...(maxPrice ? { maxPrice } : {}),
                     priceCurrency: "PLN",
                   },
                 }

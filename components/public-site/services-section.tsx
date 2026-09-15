@@ -1,7 +1,7 @@
 import { ArrowUpRight, Code2, Play, Sparkles, Target, type LucideIcon } from "lucide-react";
 
 import type { Dictionary, Locale } from "@/lib/i18n";
-import { finalPrice, money, services } from "@/lib/utils";
+import { finalPrice, money, moneyRange, services } from "@/lib/utils";
 
 import { Reveal, SectionHeader } from "./reveal";
 import { Accent } from "./rich-text";
@@ -21,7 +21,7 @@ export function ServicesSection({ t, locale }: { t: Dictionary["services"]; loca
         <SectionHeader id="offer-title" kicker={t.kicker} title={<Accent text={t.title} />} description={t.description} />
 
         <div className="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {services.map(([, , price, icon, discount], index) => {
+          {services.map(([, , price, icon, discount, maxPrice], index) => {
             const Icon = icons[icon] || Sparkles;
             const [title, description] = t.items[index] ?? ["", ""];
 
@@ -45,8 +45,10 @@ export function ServicesSection({ t, locale }: { t: Dictionary["services"]; loca
 
                   <div className="relative mt-8 flex items-end justify-between border-t border-line pt-6">
                     <div>
-                      <p className="text-xs text-faint">{price ? t.from : t.price}</p>
-                      {price ? (
+                      <p className="text-xs text-faint">{price && !maxPrice ? t.from : t.price}</p>
+                      {price && maxPrice ? (
+                        <p className="mt-0.5 text-2xl font-semibold tracking-tight">{moneyRange(price, maxPrice, locale)}</p>
+                      ) : price ? (
                         <p className="mt-0.5 flex items-baseline gap-2 text-2xl font-semibold tracking-tight">
                           {money(finalPrice(price, discount), locale)}
                           {discount > 0 && (

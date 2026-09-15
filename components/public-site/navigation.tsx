@@ -48,9 +48,22 @@ export function Navigation({
       setActiveSection(current);
     };
 
+    // Najwyżej raz na klatkę — na telefonie zdarzenia scroll przychodzą bardzo często.
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        handleScroll();
+      });
+    };
+
     handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.cancelAnimationFrame(frame);
+    };
   }, [onHome]);
 
   useEffect(() => {
@@ -80,8 +93,12 @@ export function Navigation({
       <div className="relative w-full max-w-6xl">
         <nav
           aria-label={t.nav.aria}
-          className={`relative flex h-16 w-full items-center justify-between rounded-2xl border px-3 backdrop-blur-2xl transition-all duration-500 sm:px-4 ${
-            scrolled || open ? "border-line-strong bg-canvas/80 shadow-float" : "border-transparent bg-transparent"
+          className={`relative flex h-16 w-full items-center justify-between rounded-2xl border px-3 transition-[background-color,border-color,box-shadow] duration-500 sm:px-4 ${
+            open
+              ? "border-line-strong bg-canvas shadow-float"
+              : scrolled
+                ? "border-line-strong bg-canvas/80 shadow-float backdrop-blur-2xl"
+                : "border-transparent bg-transparent"
           }`}
         >
           {/* LOGO */}
@@ -174,7 +191,7 @@ export function Navigation({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 -z-10 h-dvh w-full cursor-default bg-black/60 backdrop-blur-sm lg:hidden"
+                className="fixed inset-0 -z-10 h-dvh w-full cursor-default bg-black/70 lg:hidden"
                 onClick={closeMenu}
               />
 
@@ -184,7 +201,7 @@ export function Navigation({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -12, scale: 0.98 }}
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-x-0 top-[calc(100%+10px)] overflow-hidden rounded-3xl border border-line-strong bg-panel/95 p-2 shadow-float backdrop-blur-2xl lg:hidden"
+                className="absolute inset-x-0 top-[calc(100%+10px)] overflow-hidden rounded-3xl border border-line-strong bg-panel p-2 shadow-float lg:hidden"
               >
                 <ul className="p-1">
                   {navSections.map((id, index) => (
