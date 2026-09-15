@@ -84,11 +84,8 @@ export function Navigation({
   const closeMenu = () => setOpen(false);
 
   return (
-    <motion.header
-      initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-x-0 top-3 z-100 flex justify-center px-3 sm:top-5 sm:px-4"
+    <header
+      className="enter-down fixed inset-x-0 top-3 z-100 flex justify-center px-3 sm:top-5 sm:px-4"
     >
       <div className="relative w-full max-w-6xl">
         <nav
@@ -97,7 +94,7 @@ export function Navigation({
             open
               ? "border-line-strong bg-canvas shadow-float"
               : scrolled
-                ? "border-line-strong bg-canvas/80 shadow-float backdrop-blur-2xl"
+                ? "border-line-strong bg-canvas/95 shadow-float backdrop-blur-2xl lg:bg-canvas/80"
                 : "border-transparent bg-transparent"
           }`}
         >
@@ -242,6 +239,6 @@ export function Navigation({
           )}
         </AnimatePresence>
       </div>
-    </motion.header>
+    </header>
   );
 }

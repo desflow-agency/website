@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Play, Star, TrendingUp } from "lucide-react";
-import { useEffect } from "react";
+import { type CSSProperties, useEffect } from "react";
 
 import type { Dictionary } from "@/lib/i18n";
 
@@ -23,8 +23,6 @@ const clients = [
   "Taniej.",
   "DeeJayPallaside",
 ];
-
-const ease = [0.22, 1, 0.36, 1] as const;
 
 export function HeroSection({
   t,
@@ -67,12 +65,9 @@ export function HeroSection({
       </div>
 
       <div className="container-site flex flex-col items-center text-center">
-        <motion.a
+        <a
           href="#contact"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease }}
-          className="group inline-flex items-center gap-2.5 rounded-full border border-line-strong bg-ink/[0.04] py-1.5 pl-2 pr-4 text-[13px] text-soft backdrop-blur transition hover:border-ink/25 hover:text-fg"
+          className="enter-up group inline-flex items-center gap-2.5 rounded-full border border-line-strong bg-ink/[0.04] py-1.5 pl-2 pr-4 text-[13px] text-soft backdrop-blur transition hover:border-ink/25 hover:text-fg"
         >
           <span className="flex items-center gap-1.5 whitespace-nowrap rounded-full bg-mint/10 px-2 py-0.5 font-medium text-mint">
             <span className="relative flex h-1.5 w-1.5">
@@ -86,32 +81,26 @@ export function HeroSection({
             <span className="hidden sm:inline">{t.badgeLong}</span>
           </span>
           <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
-        </motion.a>
+        </a>
 
-        <motion.h1
+        <h1
           id="hero-title"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.05, ease }}
-          className="title-xl mt-8 max-w-5xl text-balance"
+          style={{ "--enter-delay": "0.05s" } as CSSProperties}
+          className="enter-up title-xl mt-8 max-w-5xl text-balance"
         >
           <Gradient text={t.title} />
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease }}
-          className="mt-7 max-w-2xl text-pretty text-base leading-7 text-soft sm:text-lg sm:leading-8"
+        <p
+          style={{ "--enter-delay": "0.15s" } as CSSProperties}
+          className="enter-up mt-7 max-w-2xl text-pretty text-base leading-7 text-soft sm:text-lg sm:leading-8"
         >
           {t.lead}
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.25, ease }}
-          className="mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row"
+        <div
+          style={{ "--enter-delay": "0.25s" } as CSSProperties}
+          className="enter-up mt-10 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row"
         >
           <a href="#contact" className="btn-site btn-site-primary">
             {common.freeQuote}
@@ -121,13 +110,11 @@ export function HeroSection({
             <Play size={15} className="fill-current" />
             {t.ctaSecondary}
           </a>
-        </motion.div>
+        </div>
 
-        <motion.dl
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-12 grid grid-cols-3 gap-6 sm:gap-14"
+        <dl
+          style={{ "--enter-delay": "0.4s" } as CSSProperties}
+          className="enter-fade mt-12 grid grid-cols-3 gap-6 sm:gap-14"
         >
           {t.stats.map(([value, label]) => (
             <div key={label} className="flex flex-col items-center">
@@ -135,14 +122,12 @@ export function HeroSection({
               <dd className="order-1 text-2xl font-semibold tracking-tight sm:text-3xl">{value}</dd>
             </div>
           ))}
-        </motion.dl>
+        </dl>
 
         {/* KOMPOZYCJA */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 0.35, ease }}
-          className="relative mt-16 w-full max-w-5xl [perspective:1600px] sm:mt-20"
+        <div
+          style={{ "--enter-delay": "0.35s" } as CSSProperties}
+          className="enter-up relative mt-16 w-full max-w-5xl [perspective:1600px] sm:mt-20"
         >
           <motion.div style={{ rotateX, rotateY }} className="relative mx-auto w-full lg:w-[82%]">
             <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[60px] bg-brand-strong/25 blur-[80px]" />
@@ -185,7 +170,7 @@ export function HeroSection({
               <p className="mt-2 text-xs leading-5 text-soft">{t.quote}</p>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       {/* KLIENCI */}

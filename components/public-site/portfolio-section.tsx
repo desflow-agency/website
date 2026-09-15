@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { Dictionary } from "@/lib/i18n";
 import { isVideo, portfolioFilters as filters, type Project, projects } from "@/lib/portfolio";
@@ -78,12 +78,10 @@ export function PortfolioSection({ t }: { t: PortfolioText }) {
         {/* SIATKA (masonry) */}
         <ul key={activeFilter} className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
             {filtered.map((project, index) => (
-              <motion.li
+              <li
                 key={project.media}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: Math.min(index * 0.04, 0.4), ease: [0.22, 1, 0.36, 1] }}
-                className="mb-4 break-inside-avoid"
+                style={{ "--enter-delay": `${Math.min(index * 0.04, 0.4)}s` } as CSSProperties}
+                className="enter-up mb-4 break-inside-avoid"
               >
                 <button
                   type="button"
@@ -114,7 +112,7 @@ export function PortfolioSection({ t }: { t: PortfolioText }) {
                     </span>
                   )}
                 </button>
-              </motion.li>
+              </li>
             ))}
         </ul>
       </div>

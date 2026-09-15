@@ -1,6 +1,31 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { type CSSProperties, useLayoutEffect, useRef } from "react";
+
+import { cn } from "@/lib/utils";
+
+/*
+ * Wjazd elementu przy przewijaniu — sam CSS + jeden IntersectionObserver, bez framer-motion.
+ * Serwer wysyła element widoczny. Dopiero po starcie skryptu elementy poniżej ekranu dostają
+ * data-reveal="hidden" i pokazują się, gdy do nich dojedziesz. To, co jest już na ekranie, zostaje widoczne.
+ */
+let observer: IntersectionObserver | null = null;
+
+function getObserver() {
+  if (!observer) {
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.reveal = "shown";
+          observer?.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.01 }
+    );
+  }
+  return observer;
+}
 
 export function Reveal({
   children,
@@ -13,18 +38,35 @@ export function Reveal({
   className?: string;
   as?: "div" | "li";
 }) {
-  const Component = as === "li" ? motion.li : motion.div;
+  const ref = useRef<HTMLElement>(null);
+  const Tag = as;
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element || element.dataset.reveal === "shown") return;
+
+    if (!element.dataset.reveal) {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        element.dataset.reveal = "shown";
+        return;
+      }
+      element.dataset.reveal = "hidden";
+    }
+
+    const io = getObserver();
+    io.observe(element);
+    return () => io.unobserve(element);
+  }, []);
 
   return (
-    <Component
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
+    <Tag
+      ref={ref as React.Ref<HTMLDivElement & HTMLLIElement>}
+      className={cn("reveal", className)}
+      style={delay ? ({ "--reveal-delay": `${delay}s` } as CSSProperties) : undefined}
     >
       {children}
-    </Component>
+    </Tag>
   );
 }
 
@@ -47,9 +89,7 @@ export function SectionHeader({
           {title}
         </h2>
       </div>
-      {description && (
-        <p className="max-w-sm text-[15px] leading-7 text-soft">{description}</p>
-      )}
+      {description && <p className="max-w-sm text-[15px] leading-7 text-soft">{description}</p>}
     </Reveal>
   );
 }

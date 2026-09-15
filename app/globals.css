@@ -619,6 +619,91 @@ html[data-theme="light"] .theme-icon__rays {
   animation-play-state: paused !important;
 }
 
+/* ---------- Wejście elementów ---------- */
+/*
+ * Animacje startowe w samym CSS: treść jest w HTML od razu i animuje się przy pierwszym malowaniu,
+ * bez czekania na JavaScript (wcześniej na wolnym telefonie przez kilka sekund był czarny ekran).
+ * fill-mode "backwards" — po animacji nie zostaje transform (ważne dla position: fixed w środku).
+ */
+.enter-up,
+.enter-down,
+.enter-fade {
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: backwards;
+  animation-delay: var(--enter-delay, 0s);
+}
+
+.enter-up {
+  animation-name: enter-up;
+}
+
+.enter-down {
+  animation-name: enter-down;
+}
+
+.enter-fade {
+  animation-name: enter-fade;
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+}
+
+@keyframes enter-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -30px, 0);
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Pojawianie się sekcji przy przewijaniu. Ukrywane dopiero przez skrypt (data-reveal), więc bez JS wszystko jest widoczne. */
+.reveal {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+
+.reveal[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+
+/* ---------- Telefony i tablety: lżejsza grafika ---------- */
+/* Animowane rozmyte plamy, rozmycie tła (backdrop-filter) i szum obciążają GPU telefonu — strona się przycina. */
+@media (pointer: coarse), (max-width: 767px) {
+  .animate-aurora {
+    animation: none;
+  }
+
+  .site *,
+  .site *::before,
+  .site *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .noise::after {
+    display: none;
+  }
+
+  /* Duże rozmyte poświaty (blur 80–160px) zjadają pamięć GPU telefonu. Ten sam miękki efekt daje maska z gradientem — liczona raz, bez rozmycia. */
+  .site [class*="blur-["] {
+    filter: none !important;
+    -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgb(0 0 0 / 0.45) 45%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 0%, rgb(0 0 0 / 0.45) 45%, transparent 100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
