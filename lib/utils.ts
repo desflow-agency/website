@@ -24,7 +24,7 @@ export const services = [
     50,
     "Sparkles",
     0,
-    null,
+    250,
   ],
   [
     "Montaż video",
@@ -40,7 +40,7 @@ export const services = [
     250,
     "Target",
     40,
-    null,
+    500,
   ],
   [
     "Strony internetowe",
